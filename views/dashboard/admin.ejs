@@ -1,0 +1,75 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+
+    <h2>Admin Dashboard</h2>
+
+    <!-- QUICK ACTIONS -->
+    <div style="margin: 20px 0; display: flex; gap: 10px;">
+        <a href="/courses" class="btn">Manage Courses</a>
+        <a href="/auth/register" class="btn btn-secondary">Create User</a>
+    </div>
+
+    <!-- USERS SECTION -->
+    <h3 style="margin: 20px 0;">All Users</h3>
+
+    <% if (users && users.length > 0) { %>
+
+        <div class="grid grid-auto">
+
+            <% users.forEach(u => { %>
+
+                <div class="card">
+
+                    <h4><%= u.name %></h4>
+
+                    <p><strong>Email:</strong> <%= u.email %></p>
+                    <p><strong>Role:</strong> <%= u.role %></p>
+
+                    <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+
+                        <!-- PROMOTE (only if not admin) -->
+                        <% if (u.role !== 'admin') { %>
+                            <form action="/users/<%= u._id %>/promote" method="POST">
+                                <button type="submit" class="btn btn-warning w-100">
+                                    Promote to Admin
+                                </button>
+                            </form>
+                        <% } %>
+                        
+                        <a href="/users/<%= u._id %>" class="btn w-100" style="text-align: center;">
+                            View Details
+                        </a>
+
+                        <!-- DELETE (prevent deleting yourself) -->
+                        <% if ((user.id || user._id.toString()) !== u._id.toString()) { %>
+                            <form action="/users/<%= u._id %>?_method=DELETE" method="POST">
+                                <button type="submit" class="btn w-100" style="background:red;">
+                                    Delete User
+                                </button>
+                            </form>
+                        <% } else { %>
+                            <span class="btn btn-secondary w-100" style="pointer-events:none; opacity:0.6; text-align: center;">
+                                Current User
+                            </span>
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            <% }) %>
+
+        </div>
+
+    <% } else { %>
+
+        <div class="empty-state">
+            <p>No users found</p>
+        </div>
+
+    <% } %>
+
+</div>
+
+<%- include('../partials/footer') %>

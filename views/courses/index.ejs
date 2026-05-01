@@ -1,0 +1,137 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+
+    <!-- HEADER SECTION -->
+    <div class="d-flex align-center"
+         style="justify-content: space-between; margin-bottom: 20px;">
+
+        <h2>All Courses</h2>
+
+        <% if (user && (user.role === 'instructor' || user.role === 'admin')) { %>
+            <a href="/courses/create" class="btn">
+                Create Course
+            </a>
+        <% } %>
+
+    </div>
+
+    <!-- COURSES -->
+    <% if (courses && courses.length > 0) { %>
+
+        <div class="grid grid-auto">
+
+            <% courses.forEach(c => { %>
+
+                <div class="card">
+                    <h4><%= c.title %></h4>
+
+                    <p><%= c.description %></p>
+
+                    <p>
+                        <strong>Instructor:</strong>
+                        <%= c.instructor?.name %>
+                    </p>
+
+                    <p>
+                        <strong>Credits:</strong>
+                        <%= c.credits %>
+                    </p>
+
+                    <!-- STUDENT ACTIONS -->
+                    <% if (user && user.role === 'student') { %>
+
+                    <% const status = enrollmentMap?.[c._id.toString()]; %>
+
+                    <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+
+                        <a href="/courses/<%= c._id %>" class="btn w-100" style="text-align: center;">
+                            View Details
+                        </a>
+
+                        <% if (status === 'active') { %>
+
+                            <!-- ACTIVE → UNENROLL -->
+                            <form action="/enrollments/<%= c._id %>/unenroll" method="POST">
+                                <button type="submit" class="btn btn-secondary w-100">
+                                    Unenroll
+                                </button>
+                            </form>
+
+                        <% } else if (status === 'dropped') { %>
+
+                            <!-- DROPPED → RE-ENROLL -->
+                            <form action="/enrollments/<%= c._id %>" method="POST">
+                                <button type="submit" class="btn btn-warning w-100">
+                                    Re-enroll
+                                </button>
+                            </form>
+
+                        <% } else if (status === 'completed') { %>
+
+                            <!-- COMPLETED -->
+                            <button class="btn btn-secondary w-100" disabled>
+                                Completed
+                            </button>
+
+                        <% } else { %>
+
+                            <!-- NOT ENROLLED -->
+                            <form action="/enrollments/<%= c._id %>" method="POST">
+                                <button type="submit" class="btn btn-secondary w-100">
+                                    Enroll
+                                </button>
+                            </form>
+
+                        <% } %>
+
+                    </div>
+
+                <% } else { %>
+
+                        <!-- INSTRUCTOR / ADMIN ACTIONS -->
+                        <% if (user && (user.role === 'instructor' || user.role === 'admin')) { %>
+
+                            <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+
+                                <a href="/courses/<%= c._id %>" class="btn w-100" style="text-align: center;">
+                                    View Details
+                                </a>
+
+                                <!-- DELETE (admin only) -->
+                                <% if (user.role === 'admin') { %>
+                                    <form action="/courses/<%= c._id %>?_method=DELETE" method="POST">
+                                        <button type="submit" class="btn btn-warning w-100">
+                                            Delete Course
+                                        </button>
+                                    </form>
+                                <% } %>
+
+                            </div>
+
+                        <% } else { %>
+
+                            <!-- STUDENT VIEW -->
+                            <a href="/courses/<%= c._id %>" class="btn w-100" style="margin-top: 10px; text-align: center;">
+                                View Details
+                            </a>
+
+                        <% } %>
+
+                    <% } %>
+
+                </div>
+
+            <% }) %>
+
+        </div>
+
+    <% } else { %>
+
+        <p class="empty-state">No courses available</p>
+
+    <% } %>
+
+</div>
+
+<%- include('../partials/footer') %>

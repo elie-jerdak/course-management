@@ -1,0 +1,112 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+
+    <h2>User Details</h2>
+
+    <!-- USER INFO -->
+    <div class="card d-flex justify-content-between mt-2" style="margin-bottom: 20px;">
+        <p><strong>Name: </strong><%= userData.name %></p>
+        <p><strong>Email:</strong> <%= userData.email %></p>
+        <p><strong>Role:</strong> <%= userData.role %></p>
+    </div>
+
+    <!-- STUDENT -->
+    <% if (userData.role === 'student') { %>
+
+        <h3>Enrolled Courses</h3>
+
+        <% if (extraData.length > 0) { %>
+
+            <div class="grid grid-auto">
+
+                <% extraData.forEach(e => { %>
+
+                    <div class="card">
+
+                        <% if (e.course) { %>
+                            <h4><%= e.course.title %></h4>
+                            <p><%= e.course.description %></p>
+                            <p><strong>Status:</strong> <%= e.status %></p>
+                            <p><strong>Instructor:</strong> <%= e.course.instructor?.name %></p>
+                        <% } else { %>
+
+                            <h4 style="color:#b91c1c;">Course unavailable</h4>
+
+                            <p style="margin: 5px 0;">
+                                This course has been removed or is no longer active.
+                            </p>
+
+                            <p style="font-size: 0.9rem; color: #666;">
+                                Your enrollment record is kept for history, but the course content is no longer accessible.
+                            </p>
+
+                            <% if (e.status === 'dropped') { %>
+                                <span class="btn btn-secondary" style="opacity: 0.7; pointer-events: none;">
+                                    Previously Dropped
+                                </span>
+                            <% } else if (e.status === 'completed') { %>
+                                <span class="btn btn-secondary" style="opacity: 0.7; pointer-events: none;">
+                                    Completed Course
+                                </span>
+                            <% } else { %>
+                                <span class="btn btn-secondary" style="opacity: 0.7; pointer-events: none;">
+                                    No Longer Available
+                                </span>
+                            <% } %>
+
+                        <% } %>
+
+                    </div>
+
+                <% }) %>
+
+            </div>
+
+        <% } else { %>
+            <p>No enrollments</p>
+        <% } %>
+
+    <% } %>
+
+
+    <!-- INSTRUCTOR -->
+    <% if (userData.role === 'instructor') { %>
+
+        <h3>Courses Taught</h3>
+
+        <% if (extraData.length > 0) { %>
+
+            <div class="grid grid-auto">
+
+                <% extraData.forEach(c => { %>
+
+                    <div class="card">
+                        <h4><%= c.title %></h4>
+                        <p><%= c.description %></p>
+                        <p><strong>Credits:</strong> <%= c.credits %></p>
+                    </div>
+
+                <% }) %>
+
+            </div>
+
+        <% } else { %>
+            <p>No courses assigned</p>
+        <% } %>
+
+    <% } %>
+
+    <!-- ADMIN -->
+    <% if (userData.role === 'admin') { %>
+
+        <p>This user is an admin. No additional data.</p>
+
+    <% } %>
+
+    <div class="d-flex mt-3" style="justify-content: center;">
+        <a href="/dashboard/admin" class="btn btn-secondary w-50" style="text-align: center;">Back</a>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

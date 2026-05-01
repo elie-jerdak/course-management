@@ -1,0 +1,512 @@
+
+/* =========================
+   RESET + BASE
+========================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f8f9fa;
+    color: #212529;
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* =========================
+   LAYOUT UTILITIES
+========================= */
+.container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.page-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* =========================
+   FLEX UTILITIES
+========================= */
+.d-flex { display: flex; }
+.flex-column { flex-direction: column; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+.justify-content-between {justify-content: space-between;}
+.align-center { align-items: center; }
+.gap-1 { gap: 10px; }
+.gap-2 { gap: 20px; }
+
+/* =========================
+   WIDTH UTILITIES
+========================= */
+.w-100 { width: 100%; }
+.w-75 { width: 75%; }
+.w-50 { width: 50%; }
+
+/* =========================
+   NAVBAR
+========================= */
+nav {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    padding: 15px 20px;
+    background: white;
+    border-bottom: 1px solid #dee2e6;
+}
+
+nav a {
+    color: #0d6efd;
+    font-weight: 500;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* =========================
+   BUTTONS (Bootstrap-like)
+========================= */
+button, .btn {
+    display: inline-block;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: #0d6efd;
+    color: white;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+button:hover, .btn:hover {
+    background: #0b5ed7;
+}
+
+.btn-secondary {
+    background: #6c757d;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    color: #212529;
+    border: none;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    color: #212529;
+}
+
+.btn-warning:active {
+    background-color: #d39e00;
+}
+
+.btn-warning:disabled {
+    background-color: #ffc107;
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.btn-secondary:hover {
+    background: #5c636a;
+}
+
+/* =========================
+   FORMS
+========================= */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top:20px;
+    align-items: center;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 420px;
+    margin: 60px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.form-title {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    align-self: flex-start;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13,110,253,0.15);
+}
+
+/* =========================
+   CARDS
+========================= */
+.card {
+    background: white;
+    border: 1px solid #e6e6e6;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    transition: 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+
+.card h4 {
+    margin-bottom: 8px;
+}
+
+.card p {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+
+/* =========================
+   GRID SYSTEM (FIXED)
+========================= */
+
+.grid {
+    display: grid;
+    gap: 20px;
+}
+
+/* desktop: 3 columns */
+.grid-auto {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* tablet: 2 columns */
+@media (max-width: 992px) {
+    .grid-auto {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* mobile: 1 column */
+@media (max-width: 600px) {
+    .grid-auto {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Fixed grids */
+.grid-1 {
+    grid-template-columns: 1fr;
+}
+
+.grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* =========================
+   RESPONSIVE BEHAVIOR
+========================= */
+
+@media (max-width: 768px) {
+    .grid-2,
+    .grid-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 992px) {
+    .grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+
+/* =========================
+   FOOTER
+========================= */
+.footer {
+    text-align: center;
+    padding: 20px;
+    background: white;
+    border-top: 1px solid #dee2e6;
+    font-size: 14px;
+    color: #6c757d;
+    margin-top: auto;
+}
+
+/* =========================
+   STATES
+========================= */
+.empty-state {
+    text-align: center;
+    margin-top: 40px;
+    color: #6c757d;
+}
+
+
+/* =========================
+   HERO SECTION
+========================= */
+.hero {
+    text-align: center;
+    padding: 80px 20px;
+    background-image: url('/images/image.jpg');
+    background-size: cover;       /* scales image to cover div */
+    background-position: center;  /* centers the image */
+    border-bottom: 1px solid #dee2e6;
+}
+
+.hero h1 {
+    font-size: 42px;
+    margin-bottom: 15px;
+    color: #212529;
+}
+
+.hero p {
+    font-size: 18px;
+    color: #6c757d;
+    margin-bottom: 25px;
+}
+
+/* =========================
+   HOME BUTTONS (reuse btn system)
+========================= */
+.hero .btn {
+    margin: 5px;
+}
+
+/* =========================
+   FEATURES SECTION
+========================= */
+.features {
+    padding: 60px 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* Feature cards (reuse .card but enhance spacing) */
+.features .card {
+    text-align: center;
+    padding: 25px;
+}
+
+.features .card h3 {
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: #212529;
+}
+
+.features .card p {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+/* =========================
+   HOME PAGE LAYOUT SPACING
+========================= */
+.home-container {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================
+   FOOTER SPACING FIX (optional improvement)
+========================= */
+.footer {
+    margin-top: auto;
+}
+
+/* =========================
+   margins
+========================= */
+.mt-1 {
+    margin-top: 0.5em;
+}
+
+.mt-2 {
+    margin-top: 1em;
+}
+
+.mt-3 {
+    margin-top: 1.5em;
+}
+
+.mt-4 {
+    margin-top: 2em;
+}
+
+.mb-1 {
+    margin-bottom: 0.5em;
+}
+
+.mb-2 {
+    margin-bottom: 1em;
+}
+
+.mb-3 {
+    margin-bottom: 1.5em;
+}
+
+.mb-4 {
+    margin-bottom: 2em;
+}
+
+.my-1 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.my-2 {
+    margin-top: 1em;
+    margin-bottom: 1em;    
+}
+
+.my-3 {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;    
+}
+
+.my-4 {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.mr-1 {
+    margin-right: 0.5em;
+}
+
+.mr-2 {
+    margin-right: 1em;
+}
+
+.mr-3 {
+    margin-right: 1.5em;
+}
+
+.mr-4 {
+    margin-right: 2em;
+}
+
+.ml-1 {
+    margin-left: 0.5em;
+}
+
+.ml-2 {
+    margin-left: 1em;
+}
+
+.ml-3 {
+    margin-left: 1.5em;
+}
+
+.ml-4 {
+    margin-left: 2em;
+}
+
+.mx-1 {
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+}
+
+.mx-2 {
+    margin-right: 1em;
+    margin-left: 1em;    
+}
+
+.mx-3 {
+    margin-right: 1.5em;
+    margin-left: 1.5em;    
+}
+
+.mx-4 {
+    margin-right: 2em;
+    margin-left: 2em;
+}
+
+.toast {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    z-index: 9999;
+
+    min-width: 250px;
+    padding: 12px 16px;
+    border-radius: 6px;
+
+    font-weight: 500;
+
+    opacity: 1;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* success */
+.toast.success {
+    background: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+}
+
+/* error */
+.toast.error {
+    background: #f8d7da;
+    color: #842029;
+    border: 1px solid #f5c2c7;
+}
+
+/* hide animation */
+.toast.hide {
+    opacity: 0;
+    transform: translateY(-10px);
+}

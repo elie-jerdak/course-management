@@ -1,0 +1,54 @@
+<%- include('../partials/header') %>
+
+<div class="card w-75 mt-4" style="align-self: center;">
+
+    <form action="/courses/<%= course._id %>?_method=PUT" method="POST" style="margin-top: 15px;">
+
+        <label class="form-label">Title</label>
+        <input type="text" name="title" value="<%= course.title %>" class="w-100" style="margin-bottom: 10px;" required />
+
+        <label class="form-label">Description</label>
+        <textarea name="description" rows="4" class="w-100" style="margin-bottom: 10px;" required><%= course.description %></textarea>
+
+        <!-- CREDITS -->
+        <label class="form-label">Credits</label>
+        <input type="number" name="credits" value="<%= course.credits %>" min="1" max="10" class="w-100" style="margin-bottom: 10px;" required/>
+
+        <!-- ============================= -->
+        <!-- ADMIN ONLY: INSTRUCTOR CHANGE -->
+        <!-- ============================= -->
+        <% if (user && user.role === 'admin') { %>
+
+            <label class="form-label">Instructor</label>
+
+            <select name="instructor" class="w-100" style="margin-bottom: 10px;">
+
+                <option value="">-- No Instructor --</option>
+
+                <% instructors.forEach(i => { %>
+                    <option 
+                        value="<%= i._id %>"
+                        <%= course.instructor && course.instructor._id.toString() === i._id.toString() ? 'selected' : '' %>>
+                        <%= i.name %>
+                    </option>
+                <% }) %>
+
+            </select>
+
+        <% } %>
+
+        <button type="submit" class="btn w-50">
+            Update
+        </button>
+
+    </form>
+
+    <div class="w-100 d-flex" style="justify-content: center;">
+        <a class="btn btn-secondary mt-3 w-50" style="text-align: center;" href="/courses/">
+            Back
+        </a>
+    </div>
+
+</div>
+
+<%- include('../partials/footer') %>

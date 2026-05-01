@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course System</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="page-container">
+    
+    <nav>
+
+    <!-- LOGGED IN USER -->
+    <% if (user) { %>
+
+        <a href="/">Home</a>
+
+        <% if (user.role === 'admin') { %>
+            <a href="/dashboard/admin">Dashboard</a>
+        <% } else if (user.role === 'instructor') { %>
+            <a href="/dashboard/instructor">Dashboard</a>
+        <% } else if (user.role === 'student') { %>
+            <a href="/dashboard/student">Dashboard</a>
+        <% } %>
+
+        <a href="/courses">Courses</a>
+
+        <a href="/auth/logout">Logout</a>
+
+    <% } else { %>
+
+        <!-- GUEST USER -->
+
+        <a href="/">Home</a>
+
+        <% if (currentPath !== '/auth/login') { %>
+            <a href="/auth/login">Login</a>
+        <% } %>
+
+        <% if (currentPath !== '/auth/register') { %>
+            <a href="/auth/register">Register</a>
+        <% } %>
+
+        <a href="/courses">Courses</a>
+
+    <% } %>
+
+    </nav>
+    
+    <hr>
+
+    <% if (success && success.length > 0) { %>
+        <div class="toast success auto-hide"><%= success %></div>
+    <% } %>
+
+    <% if (error && error.length > 0) { %>
+        <div class="toast error auto-hide"><%= error %></div>
+    <% } %>

@@ -1,0 +1,131 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="d-flex align-center"
+         style="justify-content: space-between; margin-bottom: 20px;">
+
+        <h2>Welcome, <%= user.name %></h2>
+        <h2>Instructor Dashboard</h2>
+
+    </div>
+ 
+    <!-- COURSES -->
+    <% if (courses && courses.length > 0) { %>
+
+        <div class="d-flex align-center"
+             style="justify-content: space-between; margin-bottom: 15px;">
+
+            <h3>My Courses</h3>
+
+            <a href="/courses/create" class="btn">
+                Create Course
+            </a>
+
+        </div>
+
+        <div class="grid grid-auto">
+
+            <% courses.forEach(c => { %>
+
+                <div class="card">
+
+                    <h4><%= c.title %></h4>
+                    <p><%= c.description %></p>
+
+                    <a href="/courses/<%= c._id %>" class="btn">
+                        View Details
+                    </a>
+
+                </div>
+                
+            <% }) %>
+
+        </div>
+
+        <!-- ========================= -->
+        <!-- STUDENTS TABLE -->
+        <!-- ========================= -->
+        <h3 class="mt-3">My Students</h3>
+        <% if (enrollments && enrollments.length > 0) { %>
+
+            <h3 style="margin-top: 40px;">Enrolled Students</h3>
+
+            <div class="card" style="overflow-x:auto;">
+
+                <table style="width: 100%; border-collapse: collapse;">
+
+                    <thead>
+                        <tr style="text-align: left; border-bottom: 1px solid #ddd;">
+                            <th style="padding: 10px;">Student Name</th>
+                            <th style="padding: 10px;">Email</th>
+                            <th style="padding: 10px;">Course</th>
+                            <th style="padding: 10px">Description</th>
+                            <th style="padding: 10px;">Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <% enrollments.forEach(e => { %>
+
+                            <tr style="border-bottom: 1px solid #eee;">
+
+                                <td style="padding: 10px;">
+                                    <%= e.student?.name %>
+                                </td>
+
+                                <td style="padding: 10px;">
+                                    <%= e.student?.email %>
+                                </td>
+
+                                <td style="padding: 10px;">
+                                    <%= e.course?.title %>
+                                </td>
+
+                                <td style="padding: 10px;">
+                                    <%= e.course?.description %>
+                                </td>
+
+                                <td style="padding: 10px;">
+                                    <%= e.status %>
+                                </td>
+
+                            </tr>
+
+                        <% }) %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        <% } else { %>
+
+            <p style="margin-top: 30px; color: gray;">
+                No students enrolled in your courses yet.
+            </p>
+
+        <% } %>
+
+
+    <% } else { %>
+
+        <div class="empty-state">
+
+            <h3>No courses found</h3>
+            <p>You haven’t created any courses yet.</p>
+
+            <a href="/courses/create" class="btn">
+                + Add Course
+            </a>
+
+        </div>
+
+    <% } %>
+
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,68 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+
+    <div class="form-container">
+
+        <h2 class="form-title">Create Course</h2>
+
+        <form action="/courses/create" method="POST">
+
+            <!-- TITLE -->
+            <div class="w-100">
+                <label class="form-label">Course Title</label>
+                <input type="text" name="title" class="w-100" required>
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="w-100">
+                <label class="form-label">Description</label>
+                <textarea name="description" rows="4" class="w-100" required></textarea>
+            </div>
+
+            <!-- CREDITS -->
+            <div class="w-100">
+                <label class="form-label">Credits</label>
+                <input type="number" name="credits" class="w-100" required min="1" max="10">
+            </div>
+
+            <!-- ✅ INSTRUCTOR FIELD (ADMIN ONLY) -->
+            <% if (user && user.role === 'admin') { %>
+                <div class="w-100">
+                    <label class="form-label">Assign Instructor</label>
+
+                    <select name="instructor" class="w-100">
+                        <option value="">-- Select Instructor --</option>
+
+                        <% if (instructors && instructors.length > 0) { %>
+                            <% instructors.forEach(i => { %>
+                                <option value="<%= i._id %>">
+                                    <%= i.name %>
+                                </option>
+                            <% }) %>
+                        <% } %>
+
+                    </select>
+                </div>
+            <% } %>
+
+            <!-- BUTTONS -->
+            <div class="d-flex gap-1 w-100" style="margin-top: 10px; text-align: center;">
+
+                <button type="submit" class="btn w-100">
+                    Create Course
+                </button>
+
+                <a href="/courses" class="btn btn-secondary w-100">
+                    Back
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<%- include('../partials/footer') %>

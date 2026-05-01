@@ -1,0 +1,21 @@
+<footer class="footer">
+    <p>© 2026 Learning Platform - Built with Express.js</p>
+</footer>
+
+</div>
+
+
+<script>
+    setTimeout(() => {
+        document.querySelectorAll('.auto-hide').forEach(toast => {
+            toast.classList.add('hide');
+
+            setTimeout(() => {
+                toast.remove();
+            }, 500);
+        });
+    }, 3000);
+</script>
+
+</body>
+</html>
