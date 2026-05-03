@@ -5,9 +5,14 @@
     <h2>Admin Dashboard</h2>
 
     <!-- QUICK ACTIONS -->
-    <div style="margin: 20px 0; display: flex; gap: 10px;">
-        <a href="/courses" class="btn">Manage Courses</a>
-        <a href="/auth/register" class="btn btn-secondary">Create User</a>
+    <div style="margin: 20px 0; display: flex; justify-content: space-between;">
+        <div class="d-flex justify-between" style="gap:1em">
+            <a href="/courses" class="btn">Manage Courses</a>
+            <a href="/enrollments/admin" class="btn">Manage Enrollments</a>
+        </div>
+        <div> 
+            <a href="/auth/register" class="btn btn-primary">Create User</a>
+        </div>
     </div>
 
     <!-- USERS SECTION -->
@@ -41,14 +46,17 @@
                             View Details
                         </a>
 
-                        <!-- DELETE (prevent deleting yourself) -->
+                        <!-- Update, DELETE -->
                         <% if ((user.id || user._id.toString()) !== u._id.toString()) { %>
+                            <a href="/users/<%=u._id %>/edit" class="btn btn-primary" style="text-align: center;">Update User</a>
+                            
                             <form action="/users/<%= u._id %>?_method=DELETE" method="POST">
                                 <button type="submit" class="btn w-100" style="background:red;">
                                     Delete User
                                 </button>
                             </form>
-                        <% } else { %>
+                        
+                            <% } else { %>
                             <span class="btn btn-secondary w-100" style="pointer-events:none; opacity:0.6; text-align: center;">
                                 Current User
                             </span>

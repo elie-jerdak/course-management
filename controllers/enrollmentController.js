@@ -1,5 +1,7 @@
 const Enrollment = require('../models/Enrollment');
 const Course = require('../models/Course');
+const User = require('../models/User');
+
 const mongoose = require('mongoose');
 
 // ==========================
@@ -160,5 +162,157 @@ exports.unenroll = async (req, res) => {
         console.log("UNENROLL ERROR:", err);
         req.flash('error', 'Something went wrong');
         return res.redirect('/courses');
+    }
+};
+
+// ==========================
+// ADMIN METHODS
+// ==========================
+
+exports.getAllEnrollments = async (req, res) => {
+    try {
+        const enrollments = await Enrollment.find()
+            .populate('student', 'name email')
+            .populate('course', 'title')
+            .lean();
+
+        res.render('enrollments/index', {
+            enrollments,
+            user: req.user,
+            
+        });
+
+    } catch (err) {
+        console.log(err);
+        req.flash('error', 'Failed to load enrollments');
+        res.redirect('/');
+    }
+};
+
+exports.getCreateEnrollmentPage = async (req, res) => {
+    try {
+        const users = await User.find({ role: 'student' }).lean();
+        const courses = await Course.find().lean();
+
+        res.render('enrollments/create', {
+            users,
+            courses,
+            user: req.user
+        });
+
+    } catch (err) {
+        console.log(err);
+        req.flash('error', 'Failed to load page');
+        res.redirect('/enrollments/admin');
+    }
+};
+
+exports.createEnrollment = async (req, res) => {
+    try {
+        const { studentId, courseId, status } = req.body;
+
+        const existing = await Enrollment.findOne({
+            student: studentId,
+            course: courseId
+        });
+
+        if (existing) {
+            req.flash('error', 'Enrollment already exists');
+            return res.redirect('/enrollments/admin');
+        }
+
+        await Enrollment.create({
+            student: studentId,
+            course: courseId,
+            status: status || 'active'
+        });
+
+        req.flash('success', 'Enrollment created');
+        res.redirect('/enrollments/admin');
+
+    } catch (err) {
+        console.log(err);
+        req.flash('error', 'Creation failed');
+        res.redirect('/enrollments/admin');
+    }
+};
+
+exports.getEnrollmentById = async (req, res) => {
+    try {
+        const enrollment = await Enrollment.findById(req.params.id)
+            .populate('student')
+            .populate('course')
+            .lean();
+
+        if (!enrollment) {
+            req.flash('error', 'Enrollment not found');
+            return res.redirect('/enrollments/admin');
+        }
+
+        res.render('enrollments/details', {
+            enrollment,
+            user: req.user
+        });
+
+    } catch (err) {
+        console.log(err);
+        req.flash('error', 'Failed to load enrollment');
+        res.redirect('/enrollments/admin');
+    }
+};
+
+exports.getEditEnrollmentPage = async (req, res) => {
+    try {
+        const enrollment = await Enrollment.findById(req.params.id)
+            .populate('student')
+            .populate('course')
+            .lean();
+
+        if (!enrollment) {
+            req.flash('error', 'Enrollment not found');
+            return res.redirect('/enrollments/admin');
+        }
+
+        res.render('enrollments/edit', {
+            enrollment,
+            user: req.user
+        });
+
+    } catch (err) {
+        console.log(err);
+        req.flash('error', 'Failed to load edit page');
+        res.redirect('/enrollments/admin');
+    }
+};
+
+exports.updateEnrollment = async (req, res) => {
+    try {
+        const { status } = req.body;
+
+        await Enrollment.findByIdAndUpdate(req.params.id, {
+            status
+        });
+
+        req.flash('success', 'Enrollment updated');
+        res.redirect('/enrollments/admin');
+
+    } catch (err) {
+        console.log(err);
+        req.flash('error', 'Update failed');
+        res.redirect('/enrollments/admin');
+    }
+};
+
+exports.deleteEnrollment = async (req, res) => {
+    try {
+        await Enrollment.findByIdAndDelete(req.params.id);
+
+        req.flash('success', 'Enrollment deleted');
+        res.redirect('/enrollments/admin');
+
+    } catch (err) {
+        console.log(err);
+        req.flash('error', 'Delete failed');
+        res.redirect('/enrollments/admin');
     }
 };

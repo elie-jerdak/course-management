@@ -26,7 +26,7 @@ exports.getUsers = async (req, res) => {
 
 
 // ==============================
-// GET SINGLE USER (WITH AUTH CHECK FIX)
+// GET SINGLE USER 
 // ==============================
 exports.getUserById = async (req, res) => {
     try {
@@ -39,7 +39,7 @@ exports.getUserById = async (req, res) => {
             return res.redirect('/users');
         }
 
-        // 🔒 AUTHORIZATION ADDED
+        //  AUTHORIZATION ADDED
         if (
             req.user.role !== 'admin' &&
             req.user.id !== userData._id.toString()
@@ -126,58 +126,138 @@ exports.createUser = async (req, res) => {
     }
 };
 
+// ==============================
+// GET UPDATE USER PAGE (ADMIN ONLY)
+// ==============================
+exports.getUpdateUserPage = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            req.flash('error', 'User not found');
+            return res.redirect('/users');
+        }
+
+        res.render('users/update', { user,
+            currentUser: req.user,
+            messages: req.flash() 
+        }); 
+    } catch (err) {
+        console.error(err);
+        req.flash('error', 'Something went wrong');
+        res.redirect('/users');
+    }
+};
 
 // ==============================
-// UPDATE USER (AUTH FIXED)
+// UPDATE USER
 // ==============================
+
 exports.updateUser = async (req, res) => {
     try {
         const targetUserId = req.params.id;
 
-        // 🔒 AUTHORIZATION FIXED
+        const currentUser = req.user;
+
+        //  AUTHORIZATION
         if (
-            req.user.role !== 'admin' &&
-            req.user.id !== targetUserId
+            currentUser.role !== 'admin' &&
+            currentUser.id !== targetUserId
         ) {
             req.flash('error', 'Unauthorized action');
-            return res.redirect('/users');
+            return res.redirect('/dashboard/admin');
         }
 
-        let { name, email, role } = req.body;
+        const user = await User.findById(targetUserId);
+
+        if (!user) {
+            req.flash('error', 'User not found');
+            return res.redirect('/dashboard/admin');
+        }
+
+        let { name, email, role, password } = req.body;
 
         const updateData = {};
 
-        if (name) updateData.name = name.trim();
+        //  NAME
+        if (name && name.trim() !== user.name) {
+            updateData.name = name.trim();
+        }
 
+        //  EMAIL
         if (email) {
             email = email.toLowerCase().trim();
 
             const existing = await User.findOne({ email });
+
             if (existing && existing._id.toString() !== targetUserId) {
                 req.flash('error', 'Email already in use');
-                return res.redirect('/users');
+                return res.redirect('back');
             }
 
             updateData.email = email;
         }
 
-        // only admin can change role
-        if (req.user.role === 'admin' && role) {
-            updateData.role = role;
+        //  PASSWORD (strong validation)
+        if (password && password.trim() !== '') {
+            const strongPasswordRegex =
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+            if (!strongPasswordRegex.test(password)) {
+                req.flash(
+                    'error',
+                    'Password must be at least 8 chars, include upper, lower, number, and symbol'
+                );
+                return res.redirect('back');
+            }
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updateData.password = hashedPassword;
         }
 
-        await User.findByIdAndUpdate(targetUserId, updateData);
+        //  ROLE CHANGE (ADMIN ONLY)
+        if (currentUser.role === 'admin' && role && role !== user.role) {
+
+            const oldRole = user.role;
+            const newRole = role;
+
+            //  prevent self-demotion edge cases (optional but smart)
+            if (currentUser.id === targetUserId && oldRole === 'admin' && newRole !== 'admin') {
+                req.flash('error', 'You cannot change your own admin role');
+                return res.redirect('back');
+            }
+
+            updateData.role = newRole;
+
+            //  HANDLE ROLE TRANSITIONS
+            // (you must have Course + Enrollment models for this)
+
+            // Instructor → Student/Admin
+            if (oldRole === 'instructor' && newRole !== 'instructor') {
+                await Course.deleteMany({ instructor: targetUserId });
+            }
+
+            // Student → Instructor/Admin
+            if (oldRole === 'student' && newRole !== 'student') {
+                await Enrollment.deleteMany({ student: targetUserId });
+            }
+        }
+
+        //  APPLY UPDATE
+        await User.findByIdAndUpdate(targetUserId, updateData, {
+            new: true,
+            runValidators: true
+        });
 
         req.flash('success', 'User updated successfully');
-        return res.redirect('/users');
+        return res.redirect('/dashboard/admin');
 
     } catch (err) {
         console.log("UPDATE USER ERROR:", err);
         req.flash('error', 'Failed to update user');
-        return res.redirect('/users');
+        return res.redirect('/dashboard/admin');
     }
 };
-
 
 // ==============================
 // DELETE USER (ADMIN ONLY + SAFE)
@@ -186,17 +266,17 @@ exports.deleteUser = async (req, res) => {
     try {
         const targetUserId = req.params.id;
 
-        // 🔒 cannot delete yourself
+        //  cannot delete yourself
         if (req.user.id === targetUserId) {
             req.flash('error', 'You cannot delete yourself');
-            return res.redirect('/users');
+            return res.redirect('/dashboard/admin');
         }
 
         const user = await User.findById(targetUserId);
 
         if (!user) {
             req.flash('error', 'User not found');
-            return res.redirect('/users');
+            return res.redirect('/dashboard/admin');
         }
 
         // STUDENT → drop enrollments
@@ -218,12 +298,12 @@ exports.deleteUser = async (req, res) => {
         await User.findByIdAndDelete(targetUserId);
 
         req.flash('success', 'User deleted successfully');
-        return res.redirect('/users');
+        return res.redirect('/dashboard/admin');
 
     } catch (err) {
         console.log("DELETE USER ERROR:", err);
         req.flash('error', 'Failed to delete user');
-        return res.redirect('/users');
+        return res.redirect('/dashboard/admin');
     }
 };
 

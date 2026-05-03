@@ -1,0 +1,65 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-success text-white">
+                    Create Enrollment
+                </div>
+
+                <div class="card-body">
+
+                    <form action="/enrollments/admin" method="POST">
+
+                        <div class="mb-3 w-50">
+                            <label class="form-label">Student</label>
+                            <select name="studentId" class="form-select" required>
+                                <% users.forEach(u => { %>
+                                    <option value="<%= u._id %>">
+                                        <%= u.name %>
+                                    </option>
+                                <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="mb-3 w-50">
+                            <label class="form-label">Course</label>
+                            <select name="courseId" class="form-select" required>
+                                <% courses.forEach(c => { %>
+                                    <option value="<%= c._id %>">
+                                        <%= c.title %>
+                                    </option>
+                                <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="mb-3 w-50">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select">
+                                <option value="active">Active</option>
+                                <option value="completed">Completed</option>
+                                <option value="dropped">Dropped</option>
+                            </select>
+                        </div>
+
+                        <a href="/enrollments/admin" class="btn btn-secondary text-center w-50">Back</a>
+                        <button class="btn btn-success w-50">
+                            Create
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<%- include('../partials/footer') %>

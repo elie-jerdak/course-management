@@ -1,0 +1,98 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>All Enrollments</h3>
+
+        <a href="/enrollments/admin/create" class="btn btn-success">
+            Create Enrollment
+        </a>
+    </div>
+
+    <% if (messages && messages.error) { %>
+        <div class="alert alert-danger"><%= messages.error %></div>
+    <% } %>
+
+    <% if (messages && messages.success) { %>
+        <div class="alert alert-success"><%= messages.success %></div>
+    <% } %>
+
+    <!-- EMPTY STATE CHECK -->
+    <% if (!enrollments || enrollments.length === 0) { %>
+
+        <div class="text-center mt-5">
+            <div class="card shadow-sm p-5">
+                <h5 class="text-muted mb-3">No enrollments found</h5>
+                <p class="text-muted">There are currently no enrollments in the system.</p>
+
+                <a href="/enrollments/admin/create" class="btn btn-primary mt-2">
+                    Create First Enrollment
+                </a>
+            </div>
+        </div>
+
+    <% } else { %>
+
+        <div class="grid grid-auto">
+
+            <% enrollments.forEach(e => { %>
+
+                <div class="col-md-4 mb-4">
+
+                    <div class="card">
+
+                        <div class="card-header">
+                            Enrollment
+                        </div>
+
+                        <div class="card-body mt-2">
+
+                            <p><strong>Student:</strong> <%= e.student ? e.student.name : 'Deleted User' %></p>
+                            <p><strong>Course:</strong> <%= e.course ? e.course.title : 'Deleted Course' %></p>
+
+                            <p>
+                                <strong>Status:</strong>
+                                <span class="badge 
+                                    <%= e.status === 'active' ? 'bg-success' :
+                                        e.status === 'completed' ? 'bg-primary' :
+                                        'bg-secondary' %>">
+                                    <%= e.status %>
+                                </span>
+                            </p>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-3" style="flex-direction: column; gap:0.5em">
+
+                            <a href="/enrollments/admin/<%= e._id %>" 
+                               class="btn btn-primary text-center">
+                                View
+                            </a>
+
+                            <a href="/enrollments/admin/<%= e._id %>/edit" 
+                               class="btn btn-warning text-center">
+                                Edit
+                            </a>
+
+                            <form action="/enrollments/admin/<%= e._id %>?_method=DELETE" method="POST">
+                                <button class="btn btn-danger w-100">
+                                    Delete
+                                </button>
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            <% }) %>
+
+        </div>
+
+    <% } %>
+
+</div>
+
+<%- include('../partials/footer') %>

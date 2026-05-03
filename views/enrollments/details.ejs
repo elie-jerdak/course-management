@@ -1,0 +1,74 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-5">
+
+    <div class="card">
+
+        <div class="card-header bg-primary text-white">
+            Enrollment Details
+        </div>
+
+        <% if (!enrollment.course || !enrollment.student) { %>
+
+            <!-- DELETED DATA STATE -->
+            <div class="card-body">
+
+                <div class="alert alert-danger mt-3">
+                    This enrollment contains deleted data (course or student no longer exists).
+                </div>
+
+                <div class="mt-3">
+                    <p><strong>Student:</strong> 
+                        <%= enrollment.student ? enrollment.student.name : 'Deleted User' %>
+                    </p>
+
+                    <p><strong>Email:</strong> 
+                        <%= enrollment.student ? enrollment.student.email : 'N/A' %>
+                    </p>
+
+                    <p><strong>Course:</strong> Deleted Course</p>
+
+                    <p><strong>Status:</strong> <%= enrollment.status %></p>
+
+                    <p><strong>Created:</strong> <%= enrollment.createdAt.toDateString() %></p>
+                </div>
+
+            </div>
+
+        <% } else { %>
+
+            <!-- NORMAL STATE -->
+            <div class="mt-4">
+
+                <div class="d-flex justify-content-between">
+                    <p class="w-50"><strong>Student:</strong> <%= enrollment.student.name %></p>
+                    <p class="w-50"><strong>Email:</strong> <%= enrollment.student.email %></p>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <p class="w-50"><strong>Course:</strong> <%= enrollment.course.title %></p>
+                    <p class="w-50"><strong>Status:</strong> <%= enrollment.status %></p>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <p class="w-50"><strong>Created:</strong> <%= enrollment.createdAt.toDateString() %></p>
+                </div>
+
+            </div>
+
+        <% } %>
+
+        <!-- BACK BUTTON (ALWAYS SHOWN) -->
+        <div class="card-footer d-flex mt-4 w-50" style="justify-self: center;">
+
+            <a href="/enrollments/admin" class="btn btn-secondary text-center w-100">
+                Back
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include('../partials/footer') %>

@@ -13,6 +13,13 @@ function validateObjectId(req, res, next) {
     }
     next();
 }
+// GET UPDATE USER PAGE (Edit Form)
+router.get('/:id/edit',
+    requireAuth,
+    roleMiddleware('admin'), // optional depending on who can edit
+    validateObjectId,
+    userController.getUpdateUserPage
+);
 
 // ADMIN DASHBOARD
 router.get('/',
