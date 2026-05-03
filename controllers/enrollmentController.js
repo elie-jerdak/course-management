@@ -28,7 +28,7 @@ exports.enrollInCourse = async (req, res) => {
             course: courseId
         });
 
-        // 🔁 REACTIVATE DROPPED ENROLLMENT
+        // REACTIVATE DROPPED ENROLLMENT
         if (existing && existing.status === 'dropped') {
             existing.status = 'active';
             await existing.save();
@@ -37,13 +37,13 @@ exports.enrollInCourse = async (req, res) => {
             return res.redirect('/dashboard/student');
         }
 
-        // ❌ ALREADY ACTIVE
+        // ALREADY ACTIVE
         if (existing && existing.status === 'active') {
             req.flash('error', 'You are already enrolled in this course');
             return res.redirect('/courses');
         }
 
-        // ➕ NEW ENROLLMENT
+        // NEW ENROLLMENT
         await Enrollment.create({
             student: studentId,
             course: courseId,
@@ -104,7 +104,7 @@ exports.getCourseStudents = async (req, res) => {
             return res.redirect('/courses');
         }
 
-        // 🔒 AUTHORIZATION (important missing check)
+        // AUTHORIZATION (important missing check)
         if (
             req.user.role !== 'admin' &&
             course.instructor?.toString() !== req.user.id
@@ -171,6 +171,13 @@ exports.unenroll = async (req, res) => {
 
 exports.getAllEnrollments = async (req, res) => {
     try {
+
+        // AUTHORIZATION
+        if (req.user.role !== 'admin') {
+            req.flash('error', 'Unauthorized access');
+            return res.redirect('/');
+        }
+
         const enrollments = await Enrollment.find()
             .populate('student', 'name email')
             .populate('course', 'title')
@@ -179,7 +186,6 @@ exports.getAllEnrollments = async (req, res) => {
         res.render('enrollments/index', {
             enrollments,
             user: req.user,
-            
         });
 
     } catch (err) {
@@ -191,6 +197,13 @@ exports.getAllEnrollments = async (req, res) => {
 
 exports.getCreateEnrollmentPage = async (req, res) => {
     try {
+
+        // AUTHORIZATION
+        if (req.user.role !== 'admin') {
+            req.flash('error', 'Unauthorized access');
+            return res.redirect('/enrollments/admin');
+        }
+
         const users = await User.find({ role: 'student' }).lean();
         const courses = await Course.find().lean();
 
@@ -209,6 +222,13 @@ exports.getCreateEnrollmentPage = async (req, res) => {
 
 exports.createEnrollment = async (req, res) => {
     try {
+
+        // AUTHORIZATION
+        if (req.user.role !== 'admin') {
+            req.flash('error', 'Unauthorized action');
+            return res.redirect('/enrollments/admin');
+        }
+
         const { studentId, courseId, status } = req.body;
 
         const existing = await Enrollment.findOne({
@@ -239,6 +259,13 @@ exports.createEnrollment = async (req, res) => {
 
 exports.getEnrollmentById = async (req, res) => {
     try {
+
+        // AUTHORIZATION
+        if (req.user.role !== 'admin') {
+            req.flash('error', 'Unauthorized access');
+            return res.redirect('/enrollments/admin');
+        }
+
         const enrollment = await Enrollment.findById(req.params.id)
             .populate('student')
             .populate('course')
@@ -263,6 +290,13 @@ exports.getEnrollmentById = async (req, res) => {
 
 exports.getEditEnrollmentPage = async (req, res) => {
     try {
+
+        // AUTHORIZATION
+        if (req.user.role !== 'admin') {
+            req.flash('error', 'Unauthorized access');
+            return res.redirect('/enrollments/admin');
+        }
+
         const enrollment = await Enrollment.findById(req.params.id)
             .populate('student')
             .populate('course')
@@ -287,6 +321,13 @@ exports.getEditEnrollmentPage = async (req, res) => {
 
 exports.updateEnrollment = async (req, res) => {
     try {
+
+        // AUTHORIZATION
+        if (req.user.role !== 'admin') {
+            req.flash('error', 'Unauthorized action');
+            return res.redirect('/enrollments/admin');
+        }
+
         const { status } = req.body;
 
         await Enrollment.findByIdAndUpdate(req.params.id, {
@@ -305,6 +346,13 @@ exports.updateEnrollment = async (req, res) => {
 
 exports.deleteEnrollment = async (req, res) => {
     try {
+
+        // AUTHORIZATION
+        if (req.user.role !== 'admin') {
+            req.flash('error', 'Unauthorized action');
+            return res.redirect('/enrollments/admin');
+        }
+
         await Enrollment.findByIdAndDelete(req.params.id);
 
         req.flash('success', 'Enrollment deleted');

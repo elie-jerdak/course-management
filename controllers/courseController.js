@@ -8,9 +8,15 @@ const mongoose = require('mongoose');
 // ==========================
 exports.createPage = async (req, res) => {
     try {
+
+        // AUTHORIZATION (ADD)
+        if (req.user.role !== 'admin' && req.user.role !== 'instructor') {
+            req.flash('error', 'Unauthorized access');
+            return res.redirect('/courses');
+        }
+
         let instructors = [];
 
-        // only admin can assign instructors
         if (req.user.role === 'admin') {
             instructors = await User.find({ role: 'instructor' })
                 .select('name')
@@ -34,6 +40,13 @@ exports.createPage = async (req, res) => {
 // ==========================
 exports.createCourse = async (req, res) => {
     try {
+
+        // AUTHORIZATION (ADD)
+        if (req.user.role !== 'admin' && req.user.role !== 'instructor') {
+            req.flash('error', 'Unauthorized action');
+            return res.redirect('/courses');
+        }
+
         let { title, description, credits, instructor } = req.body;
 
         if (!title || !credits) {
@@ -47,15 +60,9 @@ exports.createCourse = async (req, res) => {
             credits
         };
 
-        // ==========================
-        // ROLE LOGIC FIX
-        // ==========================
-
         if (req.user.role === 'admin') {
-            // admin can assign instructor OR leave empty
             courseData.instructor = instructor || null;
         } else {
-            // instructor creates their own course
             courseData.instructor = req.user.id;
         }
 
@@ -90,7 +97,7 @@ exports.coursePage = async (req, res) => {
             .select('course status')
             .lean();
 
-            // 🔥 CLEAN + SAFE + FILTERED MAPPING
+            // CLEAN + SAFE + FILTERED MAPPING
             enrollments
                 .filter(e => e.course) // remove orphan enrollments
                 .forEach(e => {
@@ -124,7 +131,7 @@ exports.coursePage = async (req, res) => {
 exports.getCourseById = async (req, res) => {
     try {
         const course = await Course.findById(req.params.id)
-            .select('title description instructor credits') // ✅ include credits
+            .select('title description instructor credits') // include credits
             .populate('instructor', 'name email')
             .lean();
 
@@ -169,7 +176,7 @@ exports.getCourseEditPage = async (req, res) => {
             return res.redirect('/courses');
         }
 
-        // 🔒 AUTHORIZATION
+        // AUTHORIZATION
         if (
             req.user.role !== 'admin' &&
             course.instructor?.toString() !== req.user.id
@@ -178,7 +185,7 @@ exports.getCourseEditPage = async (req, res) => {
             return res.redirect('/courses');
         }
 
-        // 👇 only admins can reassign instructors
+        // only admins can reassign instructors
         let instructors = [];
 
         if (req.user.role === 'admin') {
@@ -190,7 +197,7 @@ exports.getCourseEditPage = async (req, res) => {
         return res.render('courses/edit', {
             course,
             user: req.user,
-            instructors // ✅ FIX: now defined
+            instructors // FIX: now defined
         });
 
     } catch (err) {
@@ -214,7 +221,7 @@ exports.updateCourse = async (req, res) => {
             return res.redirect('/courses');
         }
 
-        // 🔒 AUTHORIZATION
+        // AUTHORIZATION
         if (
             req.user.role !== 'admin' &&
             course.instructor?.toString() !== req.user.id
@@ -308,7 +315,7 @@ exports.deleteCourse = async (req, res) => {
             return res.redirect('/courses');
         }
 
-        // 🔒 ownership check (admin OR course instructor)
+        // ownership check (admin OR course instructor)
         if (
             req.user.role !== 'admin' &&
             course.instructor?.toString() !== req.user.id
@@ -317,16 +324,16 @@ exports.deleteCourse = async (req, res) => {
             return res.redirect('/courses');
         }
 
-        // 🧹 CASCADE: mark enrollments as dropped (soft cleanup)
+        // CASCADE: mark enrollments as dropped (soft cleanup)
         await Enrollment.updateMany(
             { course: course._id },
             { status: 'dropped' }
         );
 
-        // 🧹 OPTIONAL (better consistency): remove orphan enrollments completely
+        // OPTIONAL (better consistency): remove orphan enrollments completely
         // await Enrollment.deleteMany({ course: course._id });
 
-        // 🗑 DELETE COURSE
+        // DELETE COURSE
         await Course.findByIdAndDelete(course._id);
 
         req.flash('success', 'Course deleted successfully');

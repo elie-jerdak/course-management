@@ -7,6 +7,13 @@ const Enrollment = require('../models/Enrollment');
 // ==========================
 exports.adminDashboard = async (req, res) => {
     try {
+
+        //  AUTHORIZATION (ADD)
+        if (req.user.role !== 'admin') {
+            req.flash('error', 'Unauthorized access');
+            return res.redirect('/');
+        }
+
         const users = await User.find().lean();
 
         res.render('dashboard/admin', {
@@ -25,15 +32,20 @@ exports.adminDashboard = async (req, res) => {
 // ==========================
 exports.instructorDashboard = async (req, res) => {
     try {
+
+        // AUTHORIZATION (ADD)
+        if (req.user.role !== 'instructor') {
+            req.flash('error', 'Unauthorized access');
+            return res.redirect('/');
+        }
+
         const instructorId = req.user.id;
 
-        // 1. Get instructor's courses
         const courses = await Course.find({ instructor: instructorId })
             .lean();
 
         const courseIds = courses.map(c => c._id);
 
-        // 2. Get enrollments for those courses
         const enrollments = await Enrollment.find({
             course: { $in: courseIds }
         })
@@ -41,7 +53,6 @@ exports.instructorDashboard = async (req, res) => {
         .populate('course', 'title description')
         .lean();
 
-        // 3. Group enrollments by course (for grid section)
         const enrollmentMap = {};
 
         enrollments.forEach(e => {
@@ -58,7 +69,7 @@ exports.instructorDashboard = async (req, res) => {
             user: req.user,
             courses,
             enrollmentMap,
-            enrollments // ✅ ADD THIS for the table
+            enrollments
         });
 
     } catch (err) {

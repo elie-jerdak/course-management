@@ -8,6 +8,13 @@ const bcrypt = require('bcrypt');
 // ==============================
 exports.getUsers = async (req, res) => {
     try {
+
+        //  AUTHORIZATION (MISSING BEFORE)
+        if (req.user.role !== 'admin') {
+            req.flash('error', 'Unauthorized access');
+            return res.redirect('/dashboard');
+        }
+
         const users = await User.find()
             .select('-password')
             .lean();
@@ -131,6 +138,13 @@ exports.createUser = async (req, res) => {
 // ==============================
 exports.getUpdateUserPage = async (req, res) => {
     try {
+
+        //  AUTHORIZATION (ADD)
+        if (req.user.role !== 'admin' && req.user.id !== req.params.id) {
+            req.flash('error', 'Unauthorized access');
+            return res.redirect('/dashboard');
+        }
+
         const user = await User.findById(req.params.id);
 
         if (!user) {
@@ -138,17 +152,18 @@ exports.getUpdateUserPage = async (req, res) => {
             return res.redirect('/users');
         }
 
-        res.render('users/update', { user,
+        res.render('users/update', { 
+            user,
             currentUser: req.user,
             messages: req.flash() 
-        }); 
+        });
+
     } catch (err) {
         console.error(err);
         req.flash('error', 'Something went wrong');
         res.redirect('/users');
     }
 };
-
 // ==============================
 // UPDATE USER
 // ==============================
@@ -264,9 +279,15 @@ exports.updateUser = async (req, res) => {
 // ==============================
 exports.deleteUser = async (req, res) => {
     try {
+
+        // AUTHORIZATION (ADD SAFETY LAYER)
+        if (req.user.role !== 'admin') {
+            req.flash('error', 'Unauthorized access');
+            return res.redirect('/dashboard/admin');
+        }
+
         const targetUserId = req.params.id;
 
-        //  cannot delete yourself
         if (req.user.id === targetUserId) {
             req.flash('error', 'You cannot delete yourself');
             return res.redirect('/dashboard/admin');
@@ -279,7 +300,6 @@ exports.deleteUser = async (req, res) => {
             return res.redirect('/dashboard/admin');
         }
 
-        // STUDENT → drop enrollments
         if (user.role === 'student') {
             await Enrollment.updateMany(
                 { student: targetUserId, status: 'active' },
@@ -287,7 +307,6 @@ exports.deleteUser = async (req, res) => {
             );
         }
 
-        // INSTRUCTOR → remove from courses
         if (user.role === 'instructor') {
             await Course.updateMany(
                 { instructor: targetUserId },
@@ -360,7 +379,7 @@ exports.changeUserRole = async (req, res) => {
             return res.redirect('/dashboard/admin');
         }
 
-        // 🔒 AUTHORIZATION CHECK (IMPORTANT FIX)
+        //  AUTHORIZATION CHECK (IMPORTANT FIX)
         if (req.user.role !== 'admin') {
             req.flash('error', 'Unauthorized action');
             return res.redirect('/dashboard/admin');

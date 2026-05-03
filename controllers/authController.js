@@ -9,37 +9,34 @@ exports.register = async (req, res) => {
     try {
         let { name, email, password, role } = req.body;
 
-        // normalize email
         email = email?.toLowerCase().trim();
 
-        // basic validation
         if (!name || !email || !password) {
             req.flash('error', 'All fields are required');
             return res.redirect('/auth/register');
         }
 
-        // email format validation
         const emailRegex = /^\S+@\S+\.\S+$/;
         if (!emailRegex.test(email)) {
             req.flash('error', 'Invalid email format');
             return res.redirect('/auth/register');
         }
 
-        // check duplicate email
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             req.flash('error', 'Email already exists');
             return res.redirect('/auth/register');
         }
 
-        // hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await User.create({
             name: name.trim(),
             email,
             password: hashedPassword,
-            role: role || 'student'
+
+            // SECURITY FIX (IMPORTANT)
+            role: role === 'admin' || role === 'instructor' ? 'student' : (role || 'student')
         });
 
         req.flash('success', 'Account created successfully. Please login.');
@@ -102,7 +99,7 @@ try {
         return res.redirect('/dashboard/student');
 
     } catch (err) {
-    console.log("LOGIN ERROR:", err); // 👈 ADD THIS
+    console.log("LOGIN ERROR:", err);
     req.flash('error', 'Login failed');
     return res.redirect('/auth/login');
 }
