@@ -1,31 +1,96 @@
     <%- include('../partials/header') %>
     <!-- HERO -->
     <div class="hero">
-        <h1>ABC</h1>
-        <strong><p style="color: white;">Manage courses, enroll students, and track progress easily.</p></strong>
-
-        <a href="/courses" class="btn">Browse Courses</a>
-        <a href="/auth/register" class="btn secondary">Get Started</a>
+        <div class="w-50" style="align-items: center;">
+            <h1 style="color: white; font-size: 100px;">Where learning</h1><br>
+            <h1 style="color: white; font-size: 100px;"> comes to life</h1>
+        </div>
     </div>
 
     <!-- FEATURES -->
     <div class="features">
 
         <div class="card">
-            <h3>📚 Courses</h3>
-            <p>Create and manage learning content easily.</p>
+            <div class="card-body">
+                <h2>Courses</h2><br>
+                <p>Build, launch, and refine your curriculum from a centralized hub. This robust toolset allows you to package multimedia resources into structured modules that guide learners seamlessly from introduction to mastery.</p>
+                <a href="/courses">Checkout Courses ></a>
+            </div>
         </div>
 
         <div class="card">
-            <h3>🎓 Enrollment</h3>
-            <p>Students can enroll and track their progress.</p>
+            <div class="card-body">
+                <h2> Enrollment</h2><br>
+                <p>Simplify how learners register, pay, and begin their educational journey. Real-time telemetry allows students to self-manage their coursework, track milestones, and view customized completion projections.</p>
+                <a href="/courses">Enroll Now ></a>
+            </div>
         </div>
 
         <div class="card">
-            <h3>👨‍🏫 Roles</h3>
-            <p>Separate dashboards for admin, instructors, and students.</p>
+            <div class="card-body">
+                <h2> Roles</h2><br>
+                <p>Maintain security and operational focus across your entire ecosystem. This multi-layered architecture delivers tailored experiences, stripping away clutter to present users with exactly the tools they need.</p>
+                <a href="/auth/login">Login ></a>
+            </div>
         </div>
 
     </div>
+    
+    <section class="info">
+        <div class="row" style="--bs-gutter-x: 0">
+
+            <!-- Left Column -->
+            <div class="col-8 image-wrapper">
+                <img src="/images/image_3.avif" alt="Students" class="img-fluid info-img">
+            </div>
+
+            <div class="col-4 text-panel">
+                <h1>College & Career Readiness</h1>
+
+                <h5>The future starts here.</h5>
+
+                <p>
+                        Today's students are tomorrow's leaders. With engaging,
+                        future-ready content, we help educators prepare students
+                        for college, careers, and beyond.
+                </p>
+
+                <a href="/courses" class="btn">Explore Courses</a>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="about">
+        <div class="row" style="justify-content: end; gap: 15px;">
+            <img src="images/image_5.png" style="width: 250px; height: 200px;">
+            <div class="p-4" style="width: 65%;">
+                <h1 style="color: #0f5132;">About CourseFlow</h1>
+                <p style="text-align: justify;">
+                    We create meaningful learning experiences for people of all ages. 
+                    Our mission? To help students, educators, and businesses make progress toward their personal and professional goals.
+                </p>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6 ">
+                <h1 style="color: #082d1c;">Purpose driven</h1><br>
+                <p>
+                    The right learning solutions make a big difference at every age.
+                     We help people realize the lives they imagine through learning.
+                </p><br>
+                <a href="/about">Get to know CourseFlow ></a>
+            </div>
+            
+            <div class="col-6">
+                <h1 style="color: #082d1c;">Digital first</h1><br>
+                <p>
+                    Flexible, affordable tech solutions fit the way you live and learn. 
+                    That's why we focus on adaptability and innovation.
+                </p><br>
+                <a href="#">Learn how we're growing ></a>
+            </div>
+        </div>
+    </section>
 
     <%- include('../partials/footer') %>

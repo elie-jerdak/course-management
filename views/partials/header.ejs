@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Course System</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
@@ -29,24 +30,19 @@
     <% } else { %>
 
         <!-- GUEST USER -->
-
-        <a href="/">Home</a>
-
-        <% if (currentPath !== '/auth/login') { %>
-            <a href="/auth/login">Login</a>
-        <% } %>
+        <div style="display:flex; justify-content: space-between; gap: 15px">
+            <a href="/">Home</a>
+            
+            <a href="/courses">Courses</a>
+        </div>
 
         <% if (currentPath !== '/auth/register') { %>
-            <a href="/auth/register">Register</a>
+            <a href="/auth/register" class="btn">Register</a>
         <% } %>
-
-        <a href="/courses">Courses</a>
 
     <% } %>
 
     </nav>
-    
-    <hr>
 
     <% if (success && success.length > 0) { %>
         <div class="toast success auto-hide"><%= success %></div>
