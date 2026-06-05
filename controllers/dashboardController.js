@@ -33,19 +33,33 @@ exports.adminDashboard = async (req, res) => {
 exports.instructorDashboard = async (req, res) => {
     try {
 
-        // AUTHORIZATION (ADD)
+        // AUTHORIZATION
         if (req.user.role !== 'instructor') {
             req.flash('error', 'Unauthorized access');
             return res.redirect('/');
         }
 
         const instructorId = req.user.id;
+        const searchTerm = req.query.q?.trim() || '';
 
-        const courses = await Course.find({ instructor: instructorId })
-            .lean();
+        // BUILD FILTER
+        const filter = {
+            instructor: instructorId
+        };
+
+        if (searchTerm) {
+            filter.title = {
+                $regex: searchTerm,
+                $options: 'i'
+            };
+        }
+
+        // COURSES
+        const courses = await Course.find(filter).lean();
 
         const courseIds = courses.map(c => c._id);
 
+        // ENROLLMENTS (only for visible courses)
         const enrollments = await Enrollment.find({
             course: { $in: courseIds }
         })
@@ -53,6 +67,7 @@ exports.instructorDashboard = async (req, res) => {
         .populate('course', 'title description')
         .lean();
 
+        // GROUP ENROLLMENTS BY COURSE
         const enrollmentMap = {};
 
         enrollments.forEach(e => {
@@ -69,7 +84,8 @@ exports.instructorDashboard = async (req, res) => {
             user: req.user,
             courses,
             enrollmentMap,
-            enrollments
+            enrollments,
+            searchTerm
         });
 
     } catch (err) {
@@ -84,12 +100,15 @@ exports.instructorDashboard = async (req, res) => {
 // ==========================
 exports.studentDashboard = async (req, res) => {
     try {
+
         const studentId = req.user?.id || req.user?._id;
 
         if (!studentId) {
             req.flash('error', 'Unauthorized access');
             return res.redirect('/auth/login');
         }
+
+        const searchTerm = req.query.q?.trim() || '';
 
         const enrollments = await Enrollment.find({ student: studentId })
             .populate({
@@ -101,17 +120,26 @@ exports.studentDashboard = async (req, res) => {
             })
             .lean();
 
-        // ensure it's always an array
-        const safeEnrollments = enrollments.filter(e => e.course !== null);
+        // remove invalid enrollments
+        let safeEnrollments = enrollments.filter(e => e.course !== null);
+
+        // SEARCH FILTER (client-side filtering on populated data)
+        if (searchTerm) {
+            safeEnrollments = safeEnrollments.filter(e =>
+                e.course.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
 
         return res.render('dashboard/student', {
             enrollments: safeEnrollments,
-            user: req.user
+            user: req.user,
+            searchTerm
         });
 
     } catch (err) {
-        console.log("DASHBOARD ERROR:", err);
+        console.log("STUDENT DASHBOARD ERROR:", err);
         req.flash('error', 'Failed to load student dashboard');
         return res.redirect('/courses');
     }
 };
+

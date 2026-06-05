@@ -1,26 +1,51 @@
 <%- include('../partials/header') %>
 
-<div class="container">
+<div class="container dashboard">
 
     <!-- HEADER -->
-    <div class="d-flex align-center"
+    <div class="d-flex align-center flex-column"
          style="justify-content: space-between; margin-bottom: 20px;">
 
         <h2>Welcome, <%= user.name %></h2>
-        <h2>Instructor Dashboard</h2>
+        
+        <!-- USER INFO -->
+        <div class="card user-info">
 
+                <span><strong>Username:</strong> <%= user.name %></span>
+                <span><strong>Email:</strong> <%= user.email %></span>
+                <span><strong>Role:</strong> <%= user.role %></span>
+        </div> 
     </div>
  
+    <div>
     <!-- COURSES -->
     <% if (courses && courses.length > 0) { %>
 
-        <div class="d-flex align-center"
-             style="justify-content: space-between; margin-bottom: 15px;">
+        <div class="d-flex"
+             style="justify-content: space-between; margin-bottom: 15px; align-items: center;">
 
             <h3>My Courses</h3>
 
-            <a href="/courses/create" class="btn">
-                Create Course
+            <div class="search-container">
+                <form action="/dashboard/instructor" method="GET" class="mb-3">
+                    <div class="input-group">
+                        <input
+                            type="text"
+                            name="q"
+                            class="form-control"
+                            placeholder="Search enrolled courses..."
+                            value="<%= searchTerm || '' %>"
+                        >
+
+                        <button class="btn" style="background-color: #082d1c;">
+                            <i class="bi bi-search" style="color: white;"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <a href="/courses/create" class="btn header-btn">
+                <i class="bi bi-plus"></i> Create Course
             </a>
 
         </div>
@@ -29,7 +54,7 @@
 
             <% courses.forEach(c => { %>
 
-                <div class="card">
+                <div class="card course">
 
                     <h4><%= c.title %></h4>
                     <p><%= c.description %></p>
@@ -50,9 +75,7 @@
         <h3 class="mt-3">My Students</h3>
         <% if (enrollments && enrollments.length > 0) { %>
 
-            <h3 style="margin-top: 40px;">Enrolled Students</h3>
-
-            <div class="card" style="overflow-x:auto;">
+            <div class="card mt-4" style="overflow-x:auto;">
 
                 <table style="width: 100%; border-collapse: collapse;">
 
@@ -125,7 +148,7 @@
         </div>
 
     <% } %>
-
+    </div>
 </div>
 
 <%- include('../partials/footer') %>

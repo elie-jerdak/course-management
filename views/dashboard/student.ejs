@@ -1,140 +1,153 @@
 <%- include('../partials/header') %>
+    
+<div class="container dashboard">
+    <div>
+        <!-- PAGE TITLE -->
+        <h2>Student Dashboard</h2>
 
-<div class="container">
+        <!-- USER INFO -->
+        <div class="card user-info">
 
-    <!-- PAGE TITLE -->
-    <h2>Student Dashboard</h2>
-
-    <!-- USER INFO -->
-    <div class="card"
-         style="margin: 15px 0; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;">
-
-        <div>
-            <strong>Name:</strong> <%= user.name %>
+                <span><strong>Username:</strong> <%= user.name %></span>
+                <span><strong>Email:</strong> <%= user.email %></span>
+                <span><strong>Role:</strong> <%= user.role %></span>
         </div>
-
-        <div>
-            <strong>Email:</strong> <%= user.email %>
-        </div>
-
-        <div>
-            <strong>Role:</strong> <%= user.role %>
-        </div>
-
+        
     </div>
 
-    <!-- SECTION TITLE -->
-    <div class="d-flex justify-content-between mb-3">
-        <h3 style="margin: 20px 0;">My Courses</h3>
-        <a href="/courses" class="btn" style="height: min-content; align-self: center;">Enroll</a>
-    </div>
+    <div>
+        <!-- SECTION TITLE -->
+        <div class="d-flex justify-content-between mb-3">
+            <h3 style="margin: 20px 0;">My Courses</h3>
+            
+            <div class="search-container">
+                <form action="/dashboard/student" method="GET" class="mb-3">
+                    <div class="input-group">
+                        <input
+                            type="text"
+                            name="q"
+                            class="form-control"
+                            placeholder="Search enrolled courses..."
+                            value="<%= searchTerm || '' %>"
+                        >
 
-    <!-- ENROLLMENTS -->
-    <% if (enrollments && enrollments.length > 0) { %>
-
-        <div class="grid grid-auto">
-
-            <% enrollments.forEach(e => { %>
-
-            <div class="card">
-
-                <div class="d-flex justify-content-between">
-
-                    <div class="d-flex flex-column">
-
-                        <% if (e.course) { %>
-
-                            <h4><%= e.course.title %></h4>
-
-                            <p style="white-space: pre-line;"><%= e.course.description %></p>
-
-                            <p>
-                                Status:
-                                <strong><%= e.status %></strong>
-                            </p>
-
-                            <p>
-                                Instructor:
-                                <%= e.course.instructor?.name %>
-                            </p>
-
-                        <% } else { %>
-
-                            <h4 style="color:red;">Course no longer exists</h4>
-                            <p>This course was removed.</p>
-
-                        <% } %>
-
+                        <button class="btn" style="background-color: #082d1c;">
+                            <i class="bi bi-search" style="color: white;"></i>
+                        </button>
                     </div>
+                </form>
+            </div>
+            <a href="/courses" class="btn header-btn">
+                <i class="bi bi-plus"></i> Enroll
+            </a>
+        </div>
 
-                    <div class="d-flex flex-column" style="gap: 10px;">
+        <!-- ENROLLMENTS -->
+        <% if (enrollments && enrollments.length > 0) { %>
 
-                        <% if (e.course) { %>
+            <div class="grid grid-auto">
 
-                            <!-- VIEW BUTTON ONLY IF COURSE EXISTS -->
-                            <a href="/courses/<%= e.course._id %>" class="btn">
-                                View Course
-                            </a>
+                <% enrollments.forEach(e => { %>
 
-                            <% if (e.status === 'active') { %>
+                <div class="card course">
 
-                                <form action="/enrollments/<%= e.course._id %>/unenroll" method="POST">
-                                    <button type="submit" class="btn btn-secondary w-100">
-                                        Unenroll
-                                    </button>
-                                </form>
+                    <div class="course-info">
 
-                            <% } else if (e.status === 'dropped') { %>
+                            <% if (e.course) { %>
 
-                                <form action="/enrollments/<%= e.course._id %>" method="POST">
-                                    <button type="submit" class="btn btn-warning w-100">
-                                        Re-enroll
-                                    </button>
-                                </form>
+                                <h4><%= e.course.title %></h4>
 
-                            <% } else if (e.status === 'completed') { %>
+                                <p style="white-space: pre-line;">
+                                    Description: <%= e.course.description %>
+                                </p>
 
-                                <span class="btn btn-secondary" style="pointer-events: none; opacity: 0.7;">
-                                    Completed
-                                </span>
+                                <p>
+                                    Status:
+                                    <strong><%= e.status %></strong>
+                                </p>
+
+                                <p>
+                                    Instructor:
+                                    <%= e.course.instructor?.name %>
+                                </p>
+
+                            <% } else { %>
+
+                                <h4 style="color:red;">Course no longer exists</h4>
+                                <p>This course was removed.</p>
 
                             <% } %>
 
-                        <% } else { %>
+                    </div>
 
-                            <!-- OPTIONAL: ACTION FOR BROKEN COURSE -->
-                            <span class="btn btn-secondary" style="pointer-events: none;">
-                                Unavailable
-                            </span>
+                    <div class="course-info" style="gap: 10px;">
 
-                        <% } %>
+                            <% if (e.course) { %>
+
+                                <!-- VIEW BUTTON ONLY IF COURSE EXISTS -->
+                                <a href="/courses/<%= e.course._id %>" class="btn">
+                                    View Course
+                                </a>
+
+                                <% if (e.status === 'active') { %>
+
+                                    <form action="/enrollments/<%= e.course._id %>/unenroll" method="POST">
+                                        <button type="submit" class="btn">
+                                            Unenroll
+                                        </button>
+                                    </form>
+
+                                <% } else if (e.status === 'dropped') { %>
+
+                                    <form action="/enrollments/<%= e.course._id %>" method="POST">
+                                        <button type="submit" class="btn">
+                                            Re-enroll
+                                        </button>
+                                    </form>
+
+                                <% } else if (e.status === 'completed') { %>
+
+                                    <span class="btn" style="pointer-events: none; opacity: 0.7;">
+                                        Completed
+                                    </span>
+
+                                <% } %>
+
+                            <% } else { %>
+
+                                <!-- OPTIONAL: ACTION FOR BROKEN COURSE -->
+                                <span class="btn" style="pointer-events: none;">
+                                    Unavailable
+                                </span>
+
+                            <% } %>
 
                     </div>
 
                 </div>
 
+                <% }) %>
+
             </div>
 
-            <% }) %>
+        <% } else { %>
 
-        </div>
+            <!-- EMPTY STATE -->
+            <div class="empty-state">
 
-    <% } else { %>
+                <h3>No enrollments yet</h3>
+                <p>You are not enrolled in any courses.</p>
 
-        <!-- EMPTY STATE -->
-        <div class="empty-state">
+                <a href="/courses" class="btn">
+                    Browse Courses
+                </a>
 
-            <h3>No enrollments yet</h3>
-            <p>You are not enrolled in any courses.</p>
+            </div>
 
-            <a href="/courses" class="btn">
-                Browse Courses
-            </a>
+        <% } %>
 
-        </div>
+    </div>
 
-    <% } %>
-
-</div>
-
+    </div>
+    
 <%- include('../partials/footer') %>

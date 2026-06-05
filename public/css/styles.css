@@ -28,7 +28,7 @@ a {
 ========================= */
 .container {
     width: 100%;
-    max-width: 1100px;
+    max-width: 1372px;
     margin: 0 auto;
     display: flex;
     justify-content: center;
@@ -460,3 +460,74 @@ input:focus {
     background-color: #082d1c;
     color: white;
 }
+
+.dashboard {
+    max-width: max-content;
+    min-width: 1372px;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info {
+    margin: 15px 0; 
+    padding: 1em;
+    display: flex; 
+    flex-direction: row;
+    justify-content: space-between; 
+    align-items: center; 
+    gap: 20px; 
+    flex-wrap: wrap;
+}
+
+.user-info span {
+    width: 20%;
+}
+
+.search-input {
+    border-radius: 50px;
+    padding: 12px 20px;
+}
+
+.search-container {
+    max-width: 500px;
+}
+
+.header-btn {
+    height: min-content; 
+    align-self: center; 
+    color: white; 
+    background-color: #082d1c; 
+    border-radius: 20px;
+}
+
+.course {
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.course-info{
+    display: flex;
+    flex-direction: column;
+}
+
+.course-info p{
+    border-bottom: 1px solid #d4af37;
+}
+
+.course-info a, .course-info a:hover {
+    color: #082d1c;
+    background-color: white; 
+}
+
+.course-info button, .course-info button:hover {
+    color: white;
+    background-color: #d4af37;
+}
+
+.course-info a, .course-info button {
+    width: 75%;
+    align-self: center;
+}
+
