@@ -2,19 +2,27 @@
  
 <main>
     <div class="container">
-        <h2>Welcome</h2>
-        
-        <hr class="w-50"/>
 
-        <div class="w-100" style="margin-bottom: 0; display: flex; justify-content: center; flex-direction: column; align-items: center;">
+        <div class="form-div">
+            <h5 style="color: #082d1c; font-weight: bolder;">Login</h5>
+
             <form action="/auth/login" method="POST" class="w-75">
                     <input type="email" name="email" placeholder="Email" class="form-control" />
                     <input type="password" name="password" placeholder="Password"class="form-control" required />
-                <button type="submit" class="w-75 align-center">Login</button>
+                <button type="submit" class="btn w-75 align-center">Login</button>
             </form>
 
-            <p style="text-align: center;">Don't have an account? <a href="/auth/register" style="color: blue; text-decoration: underline;">Register</a></p>
+        </div>
+        
+        <div class="form-div-text">
+            <h1>Welcome Back!</h1>
+            <p style="font-size: smaller;">Sign in and let the learning begin!</p>
 
+            <span class="mt-4">
+                <h6 style="text-align: center;">Don't have an account yet? </h6>
+                <a href="/auth/register" class="btn">Register</a>
+            </span>
+            
         </div>
     </div>
 
