@@ -31,13 +31,13 @@
                             value="<%= searchTerm || '' %>"
                         >
 
-                        <button class="btn" style="background-color: #082d1c;">
-                            <i class="bi bi-search" style="color: white;"></i>
+                        <button class="btn btn-action">
+                            <i class="bi bi-search"></i>
                         </button>
                     </div>
                 </form>
             </div>
-            <a href="/courses" class="btn header-btn">
+            <a href="/courses" class="btn btn-action">
                 <i class="bi bi-plus"></i> Enroll
             </a>
         </div>
@@ -85,14 +85,14 @@
                             <% if (e.course) { %>
 
                                 <!-- VIEW BUTTON ONLY IF COURSE EXISTS -->
-                                <a href="/courses/<%= e.course._id %>" class="btn">
+                                <a href="/courses/<%= e.course._id %>" class="btn btn-primary">
                                     View Course
                                 </a>
 
                                 <% if (e.status === 'active') { %>
 
                                     <form action="/enrollments/<%= e.course._id %>/unenroll" method="POST">
-                                        <button type="submit" class="btn">
+                                        <button type="submit" class="btn btn-warning">
                                             Unenroll
                                         </button>
                                     </form>
@@ -100,7 +100,7 @@
                                 <% } else if (e.status === 'dropped') { %>
 
                                     <form action="/enrollments/<%= e.course._id %>" method="POST">
-                                        <button type="submit" class="btn">
+                                        <button type="submit" class="btn btn-warning">
                                             Re-enroll
                                         </button>
                                     </form>
@@ -138,7 +138,7 @@
                 <h3>No enrollments yet</h3>
                 <p>You are not enrolled in any courses.</p>
 
-                <a href="/courses" class="btn">
+                <a href="/courses" class="btn btn-primary">
                     Browse Courses
                 </a>
 

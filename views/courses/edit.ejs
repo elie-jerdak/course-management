@@ -1,18 +1,18 @@
 <%- include('../partials/header') %>
 
-<div class="card w-75 mt-4" style="align-self: center;">
-
-    <form action="/courses/<%= course._id %>?_method=PUT" method="POST" style="margin-top: 15px;">
+<div class="container">
+    <div class="card course w-50 CRUD">
+        <form action="/courses/<%= course._id %>?_method=PUT" method="POST">
 
         <label class="form-label">Title</label>
-        <input type="text" name="title" value="<%= course.title %>" class="w-100" style="margin-bottom: 10px;" required />
+        <input type="text" name="title" value="<%= course.title %>"  required />
 
         <label class="form-label">Description</label>
-        <textarea name="description" rows="4" class="w-100" style="margin-bottom: 10px;" required><%= course.description %></textarea>
+        <textarea name="description" rows="4" required><%= course.description %></textarea>
 
         <!-- CREDITS -->
         <label class="form-label">Credits</label>
-        <input type="number" name="credits" value="<%= course.credits %>" min="1" max="10" class="w-100" style="margin-bottom: 10px;" required/>
+        <input type="number" name="credits" value="<%= course.credits %>" min="1" max="10" required/>
 
         <!-- ============================= -->
         <!-- ADMIN ONLY: INSTRUCTOR CHANGE -->
@@ -37,18 +37,22 @@
 
         <% } %>
 
-        <button type="submit" class="btn w-50">
-            Update
-        </button>
+
+        <div class="w-100 d-flex" style="justify-content: center; gap: 15px; align-items: center;">
+
+            <button type="submit" class="btn btn-primary w-50">
+                Update
+            </button>
+
+            <a class="btn btn-secondary w-50" href="/courses/">
+                Back
+            </a>
+        </div>
 
     </form>
 
-    <div class="w-100 d-flex" style="justify-content: center;">
-        <a class="btn btn-secondary mt-3 w-50" style="text-align: center;" href="/courses/">
-            Back
-        </a>
-    </div>
 
+    </div>
 </div>
 
 <%- include('../partials/footer') %>

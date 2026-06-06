@@ -83,7 +83,32 @@ exports.createCourse = async (req, res) => {
 // ==========================
 exports.coursePage = async (req, res) => {
     try {
-        const courses = await Course.find()
+
+        const searchTerm = req.query.q?.trim() || '';
+
+        // Build course filter
+        let courseFilter = {};
+
+        if (searchTerm) {
+            courseFilter = {
+                $or: [
+                    {
+                        title: {
+                            $regex: searchTerm,
+                            $options: 'i'
+                        }
+                    },
+                    {
+                        description: {
+                            $regex: searchTerm,
+                            $options: 'i'
+                        }
+                    }
+                ]
+            };
+        }
+
+        const courses = await Course.find(courseFilter)
             .populate('instructor', 'name email')
             .lean();
 
@@ -97,22 +122,22 @@ exports.coursePage = async (req, res) => {
             .select('course status')
             .lean();
 
-            // CLEAN + SAFE + FILTERED MAPPING
             enrollments
-                .filter(e => e.course) // remove orphan enrollments
+                .filter(e => e.course)
                 .forEach(e => {
-                    const courseId = e.course.toString();
-                    enrollmentMap[courseId] = e.status;
+                    enrollmentMap[e.course.toString()] = e.status;
                 });
         }
 
         return res.render('courses/index', {
             courses,
             user: req.user,
-            enrollmentMap
+            enrollmentMap,
+            searchTerm
         });
 
     } catch (err) {
+
         console.log("COURSE PAGE ERROR:", err);
 
         req.flash('error', 'Error loading courses');
@@ -120,7 +145,8 @@ exports.coursePage = async (req, res) => {
         return res.render('courses/index', {
             courses: [],
             user: req.user,
-            enrollmentMap: {}
+            enrollmentMap: {},
+            searchTerm: ''
         });
     }
 };

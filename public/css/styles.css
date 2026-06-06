@@ -81,8 +81,6 @@ nav a:hover {
 nav .btn,
 nav .btn:hover{
     border-radius:20px; 
-    background-color: white; 
-    color: #0f5132;
 }
 
 /* =========================
@@ -442,23 +440,10 @@ input:focus {
     align-items: center;
 }
 
-.form-div button{
-    background-color: #082d1c;
-    color: white;
-}
-
 .form-div-text a{
     border: 1px solid white;
     color: white;
     width: 50%;
-}
-
-.container a:hover{
-    border: 1px solid white;
-}
-.container button:hover{
-    background-color: #082d1c;
-    color: white;
 }
 
 .dashboard {
@@ -479,6 +464,10 @@ input:focus {
     flex-wrap: wrap;
 }
 
+.user-info p {
+    margin-bottom: 0;
+}
+
 .user-info span {
     width: 20%;
 }
@@ -490,14 +479,6 @@ input:focus {
 
 .search-container {
     max-width: 500px;
-}
-
-.header-btn {
-    height: min-content; 
-    align-self: center; 
-    color: white; 
-    background-color: #082d1c; 
-    border-radius: 20px;
 }
 
 .course {
@@ -512,18 +493,12 @@ input:focus {
     flex-direction: column;
 }
 
+.course-info form {
+    padding: 0;
+}
+
 .course-info p{
     border-bottom: 1px solid #d4af37;
-}
-
-.course-info a, .course-info a:hover {
-    color: #082d1c;
-    background-color: white; 
-}
-
-.course-info button, .course-info button:hover {
-    color: white;
-    background-color: #d4af37;
 }
 
 .course-info a, .course-info button {
@@ -531,3 +506,115 @@ input:focus {
     align-self: center;
 }
 
+.action-buttons-container {
+    display: flex; 
+    justify-content: space-between; 
+    gap: 1em;
+}
+
+.action-buttons-container a, .action-buttons-container a:hover {
+    background-color: #082d1c;
+    color: white;
+    border: none;
+}
+
+.users {
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+}
+
+.UD {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    align-items: center ;
+    margin-top: 1em;
+}
+
+.UD form {
+    padding-top: 0;
+}
+
+.UD form div {
+    width: 100%;
+}
+
+.CRUD form :where(input, select, textarea){
+    margin-bottom: 1em;
+    width: 100%;
+    border: none;
+    color: white;
+    background-color: #00000026;
+    box-shadow: 3px 3px 0 1px #082d1c;    
+}
+
+.CRUD form :where(input, select, textarea):disabled {
+    background-color: #4a5a53;
+    border-color: #4a5a53;
+    color: #d9d9d9;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.CRUD select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5 8 12l6.5-6.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+
+    padding-right: 40px;
+}
+
+.CRUD input[type="number"]::-webkit-inner-spin-button,
+.CRUD input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+    filter: invert(1);
+}
+
+.CRUD option {
+    background-color: #082d1c;
+    color: white;
+}
+
+.btn-secondary, .btn-secondary:hover {
+    background-color: #178452; 
+    color: white;
+    border: none;
+}
+
+.btn-primary, .btn-primary:hover {
+    background-color: white;
+    color: #082d1c;
+    border: none;
+}
+
+.btn-action, .btn-action:hover {
+    background-color: #082d1c ;
+    color: white;
+    border: none;
+    align-self: center;
+}
+.btn-warning, .btn-warning:hover {
+    background-color: #d4af37;
+    color: white;
+    border: none;
+}
+
+.btn-transparent, .btn-transparent:hover {
+    border: 1px solid white;
+    color: white;
+}
+
+.pwd::placeholder {
+    color: white;
+}
+
+.alert-danger {
+    background-color: white;
+    color: #082d1c;
+    border: none;
+}

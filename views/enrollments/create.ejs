@@ -2,20 +2,15 @@
 
 <div class="container mt-5">
 
-    <div class="row justify-content-center">
-        <div class="col-md-6">
+    <div class="card course CRUD w-50">
 
-            <div class="card shadow">
+                <h2>Create Enrollment</h2>
 
-                <div class="card-header bg-success text-white">
-                    Create Enrollment
-                </div>
+                <div class="UD">
 
-                <div class="card-body">
+                    <form action="/enrollments/admin" method="POST" style="width: 100%">
 
-                    <form action="/enrollments/admin" method="POST">
-
-                        <div class="mb-3 w-50">
+                        <div>
                             <label class="form-label">Student</label>
                             <select name="studentId" class="form-select" required>
                                 <% users.forEach(u => { %>
@@ -26,7 +21,7 @@
                             </select>
                         </div>
 
-                        <div class="mb-3 w-50">
+                        <div>
                             <label class="form-label">Course</label>
                             <select name="courseId" class="form-select" required>
                                 <% courses.forEach(c => { %>
@@ -37,7 +32,7 @@
                             </select>
                         </div>
 
-                        <div class="mb-3 w-50">
+                        <div>
                             <label class="form-label">Status</label>
                             <select name="status" class="form-select">
                                 <option value="active">Active</option>
@@ -46,10 +41,11 @@
                             </select>
                         </div>
 
-                        <a href="/enrollments/admin" class="btn btn-secondary text-center w-50">Back</a>
-                        <button class="btn btn-success w-50">
-                            Create
-                        </button>
+                        <div class="d-flex " style="gap: 15px; justify-content: center;">
+                            <button class="btn btn-primary w-100">Create</button>
+                            <a href="/enrollments/admin" class="btn btn-secondary w-100">Back</a>
+                        </div>
+                        
 
                     </form>
 

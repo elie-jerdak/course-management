@@ -1,12 +1,8 @@
 <%- include('../partials/header') %>
 
-<div class="container mt-5">
+<div class="container dashboard mt-5">
 
-    <div class="card">
-
-        <div class="card-header bg-primary text-white">
-            Enrollment Details
-        </div>
+    <div class="card course course-info w-50" style="align-self: center;">
 
         <% if (!enrollment.course || !enrollment.student) { %>
 
@@ -37,21 +33,19 @@
 
         <% } else { %>
 
+            <h2 class="mb-3">Enrollment Details</h2>
+
             <!-- NORMAL STATE -->
-            <div class="mt-4">
+            <div>
 
-                <div class="d-flex justify-content-between">
-                    <p class="w-50"><strong>Student:</strong> <%= enrollment.student.name %></p>
-                    <p class="w-50"><strong>Email:</strong> <%= enrollment.student.email %></p>
-                </div>
+                <div class="d-flex flex-column justify-content-between">
+                    <p><strong>Student:</strong> <%= enrollment.student.name %></p>
+                    <p><strong>Email:</strong> <%= enrollment.student.email %></p>
 
-                <div class="d-flex justify-content-between">
-                    <p class="w-50"><strong>Course:</strong> <%= enrollment.course.title %></p>
-                    <p class="w-50"><strong>Status:</strong> <%= enrollment.status %></p>
-                </div>
+                    <p><strong>Course:</strong> <%= enrollment.course.title %></p>
+                    <p><strong>Status:</strong> <%= enrollment.status %></p>
 
-                <div class="d-flex justify-content-between">
-                    <p class="w-50"><strong>Created:</strong> <%= enrollment.createdAt.toDateString() %></p>
+                    <p><strong>Created:</strong> <%= enrollment.createdAt.toDateString() %></p>
                 </div>
 
             </div>
@@ -59,9 +53,9 @@
         <% } %>
 
         <!-- BACK BUTTON (ALWAYS SHOWN) -->
-        <div class="card-footer d-flex mt-4 w-50" style="justify-self: center;">
+        <div class="d-flex mt-4" style="justify-content: center;">
 
-            <a href="/enrollments/admin" class="btn btn-secondary text-center w-100">
+            <a href="/enrollments/admin" class="btn btn-secondary w-50">
                 Back
             </a>
 

@@ -2,36 +2,32 @@
 
 <div class="container">
 
-    <div class="card" style="margin-top: 20px;">
+    <div class="card course" style="margin-top: 20px; min-width: 40%;">
 
         <!-- TITLE -->
-        <h2 style="margin-bottom: 10px;">
+        <h2>
             <%= course.title %>
         </h2>
 
         <!-- DESCRIPTION -->
-        <p style="margin-bottom: 15px; color: #555; white-space: pre-line;">
+        <p>
             <%= course.description %>
         </p>
 
-        <hr>
-
         <!-- COURSE INFO -->
-        <div class="d-flex flex-column">
+        <div class="course-info">
 
-            <p class="mt-3">
+            <p>
                 <strong>Instructor:</strong>
                 <%= course.instructor?.name %>
             </p>
 
-            <p class="my-3">
+            <p>
                 <strong>Credits:</strong>
                 <%= course.credits %>
             </p>
 
         </div>
-
-        <hr>
 
         <!-- STUDENT ACTION -->
         <% if (user && user.role === 'student') { %>
@@ -40,7 +36,7 @@
 
                 <!-- UNENROLL -->
                 <form action="/enrollments/<%= course._id %>/unenroll" method="POST">
-                    <button type="submit" class="btn btn-secondary" style="width: 50%;">
+                    <button type="submit" class="btn btn-primary w-50">
                         Unenroll
                     </button>
                 </form>
@@ -49,7 +45,7 @@
 
                 <!-- ENROLL -->
                 <form action="/enrollments/<%= course._id %>" method="POST">
-                    <button type="submit" class="btn" style="width: 50%;">
+                    <button type="submit" class="btn w-50">
                         Enroll
                     </button>
                 </form>
@@ -61,18 +57,16 @@
         <!-- INSTRUCTOR / ADMIN ACTION -->
         <% if (user && (user.role === 'instructor' || user.role === 'admin')) { %>
 
-        <div style="margin-top: 10px; display: flex; flex-direction: column; width: 75%; justify-self: center;">
+        <div class="d-flex flex-column w-75" style="align-self: center;">
 
                 <!-- UPDATE -->
-                <a href="/courses/update/<%= course._id %>" 
-                class="btn" 
-                style="width: 100%; text-align: center;">
+                <a href="/courses/update/<%= course._id %>" class="btn btn-primary w-100">
                     Update
                 </a>
 
                 <!-- DELETE -->
-                <form action="/courses/<%= course._id %>?_method=DELETE" method="POST">
-                    <button type="submit" class="btn btn-warning" style="width: 100%;">
+                <form action="/courses/<%= course._id %>?_method=DELETE" method="POST" class="mt-2 p-0">
+                    <button type="submit" class="btn btn-warning w-100">
                         Delete
                     </button>
                 </form>

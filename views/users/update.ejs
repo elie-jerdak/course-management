@@ -1,14 +1,12 @@
 <%- include('../partials/header') %>
 
 <div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
+    
+        <div class="card course CRUD w-50">
 
-            <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-header">
-                    <h2>Update User</h2>
-                </div>
-                <div class="card-body p-4">
+                <h2>Update User</h2>
+                
+                <div class="UD">
 
                     <!-- Flash Messages -->
                     <% if (messages && messages.error) { %>
@@ -24,10 +22,10 @@
                     <% } %>
 
                     <!-- Form -->
-                    <form action="/users/<%= user._id %>?_method=PUT" method="POST">
+                    <form action="/users/<%= user._id %>?_method=PUT" method="POST" class="w-100">
 
                         <!-- Name -->
-                        <div class="mb-3 w-50"> 
+                        <div> 
                             <label class="form-label fw-semibold">Name</label>
                             <input 
                                 type="text" 
@@ -39,7 +37,7 @@
                         </div>
 
                         <!-- Email -->
-                        <div class="mb-3 w-50">
+                        <div>
                             <label class="form-label fw-semibold">Email</label>
                             <input 
                                 type="email" 
@@ -52,7 +50,7 @@
 
                         <!-- Role (Admin only) -->
                         <% if (currentUser && currentUser.role === 'admin') { %>
-                            <div class="mb-3 w-50">
+                            <div>
                                 <label class="form-label fw-semibold">Role</label>
                                 <select name="role" class="form-select">
                                     <option value="student" <%= user.role === 'student' ? 'selected' : '' %>>Student</option>
@@ -63,34 +61,33 @@
                         <% } %>
 
                         <!-- Password -->
-                        <div class="mb-3 w-50">
+                        <div>
                             <label class="form-label fw-semibold">New Password</label>
                             <input 
                                 type="password" 
                                 name="password" 
-                                class="form-control"
+                                class="form-control pwd"
                                 placeholder="Leave blank to keep current password"
                             >
                         </div>
 
                         <!-- Buttons -->
-                        <div class="d-flex justify-content-between mt-4" style="gap:1em">
-                            <a href="/dashboard/admin" class="btn btn-secondary">
-                                Cancel
-                            </a>
-
-                            <button type="submit" class="btn btn-primary">
+                        <div class="d-flex justify-content-between" style="gap:1em">
+                            
+                            <button type="submit" class="btn btn-primary w-100">
                                 Update User
                             </button>
+
+                            <a href="/dashboard/admin" class="btn btn-secondary w-100">
+                                Cancel
+                            </a>
                         </div>
 
                     </form>
 
                 </div>
             </div>
-
-        </div>
-    </div>
+    
 </div>
 
 <%- include('../partials/footer') %>

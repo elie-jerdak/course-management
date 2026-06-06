@@ -8,22 +8,35 @@ const Enrollment = require('../models/Enrollment');
 exports.adminDashboard = async (req, res) => {
     try {
 
-        //  AUTHORIZATION (ADD)
+        // AUTHORIZATION
         if (req.user.role !== 'admin') {
             req.flash('error', 'Unauthorized access');
             return res.redirect('/');
         }
 
-        const users = await User.find().lean();
+        const searchTerm = req.query.q?.trim() || '';
 
-        res.render('dashboard/admin', {
+        // OPTIONAL SEARCH LOGIC (if you want filtering)
+        let filter = {};
+
+        if (searchTerm) {
+            filter = {
+                name: { $regex: searchTerm, $options: 'i' }
+            };
+        }
+
+        const users = await User.find(filter).lean();
+
+        return res.render('dashboard/admin', {
             users,
-            user: req.user
+            user: req.user,
+            searchTerm   // ✅ IMPORTANT FIX
         });
 
     } catch (err) {
+        console.log(err);
         req.flash('error', 'Failed to load admin dashboard');
-        res.redirect('/');
+        return res.redirect('/');
     }
 };
 

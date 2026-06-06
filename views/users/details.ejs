@@ -1,11 +1,11 @@
 <%- include('../partials/header') %>
 
-<div class="container">
+<div class="container dashboard">
 
     <h2>User Details</h2>
 
     <!-- USER INFO -->
-    <div class="card d-flex justify-content-between mt-2" style="margin-bottom: 20px;">
+    <div class="card user-info">
         <p><strong>Name: </strong><%= userData.name %></p>
         <p><strong>Email:</strong> <%= userData.email %></p>
         <p><strong>Role:</strong> <%= userData.role %></p>
@@ -22,11 +22,11 @@
 
                 <% extraData.forEach(e => { %>
 
-                    <div class="card">
+                    <div class="card course course-info">
 
                         <% if (e.course) { %>
                             <h4><%= e.course.title %></h4>
-                            <p><%= e.course.description %></p>
+                            <p><strong>Description: </strong><%= e.course.description %></p>
                             <p><strong>Status:</strong> <%= e.status %></p>
                             <p><strong>Instructor:</strong> <%= e.course.instructor?.name %></p>
                         <% } else { %>
@@ -81,7 +81,7 @@
 
                 <% extraData.forEach(c => { %>
 
-                    <div class="card">
+                    <div class="card course course-info">
                         <h4><%= c.title %></h4>
                         <p><%= c.description %></p>
                         <p><strong>Credits:</strong> <%= c.credits %></p>

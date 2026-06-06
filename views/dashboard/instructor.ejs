@@ -10,7 +10,6 @@
         
         <!-- USER INFO -->
         <div class="card user-info">
-
                 <span><strong>Username:</strong> <%= user.name %></span>
                 <span><strong>Email:</strong> <%= user.email %></span>
                 <span><strong>Role:</strong> <%= user.role %></span>
@@ -37,14 +36,14 @@
                             value="<%= searchTerm || '' %>"
                         >
 
-                        <button class="btn" style="background-color: #082d1c;">
-                            <i class="bi bi-search" style="color: white;"></i>
+                        <button class="btn btn-action">
+                            <i class="bi bi-search"></i>
                         </button>
                     </div>
                 </form>
             </div>
 
-            <a href="/courses/create" class="btn header-btn">
+            <a href="/courses/create" class="btn btn-action">
                 <i class="bi bi-plus"></i> Create Course
             </a>
 
@@ -59,7 +58,7 @@
                     <h4><%= c.title %></h4>
                     <p><%= c.description %></p>
 
-                    <a href="/courses/<%= c._id %>" class="btn">
+                    <a href="/courses/<%= c._id %>" class="btn btn-primary w-75" style="align-self: center;">
                         View Details
                     </a>
 
@@ -141,8 +140,8 @@
             <h3>No courses found</h3>
             <p>You haven’t created any courses yet.</p>
 
-            <a href="/courses/create" class="btn">
-                + Add Course
+            <a href="/courses/create" class="btn btn-action">
+                <i class="bi bi-plus"></i> Add Course
             </a>
 
         </div>

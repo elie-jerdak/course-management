@@ -5,7 +5,7 @@
     <% if (!enrollment.course) { %>
 
         <!-- COURSE DELETED STATE -->
-        <div class="card shadow">
+        <div class="card">
 
             <div class="card-header bg-danger text-white">
                 Edit Enrollment
@@ -32,18 +32,16 @@
     <% } else { %>
 
         <!-- NORMAL EDIT FORM -->
-        <div class="card shadow">
+        <div class="card course course-info CRUD w-50">
 
-            <div class="card-header bg-warning">
-                Edit Enrollment
-            </div>
+            <h2>Edit Enrollment</h2>
 
-            <div class="mt-4">
+            <div class="UD">
 
-                <form action="/enrollments/admin/<%= enrollment._id %>?_method=PUT" method="POST">
+                <form action="/enrollments/admin/<%= enrollment._id %>?_method=PUT" method="POST" class="w-100">
 
                     <!-- Student -->
-                    <div class="mb-3 w-50">
+                    <div>
                         <label class="form-label">Student</label>
                         <input 
                             type="text" 
@@ -54,7 +52,7 @@
                     </div>
 
                     <!-- Course -->
-                    <div class="mb-3 w-50">
+                    <div>
                         <label class="form-label">Course</label>
                         <input 
                             type="text" 
@@ -65,7 +63,7 @@
                     </div>
 
                     <!-- STATUS -->
-                    <div class="mb-3 w-50">
+                    <div>
                         <label class="form-label">Status</label>
 
                         <select name="status" class="form-select" required>
@@ -84,16 +82,15 @@
                     </div>
 
                     <!-- BUTTONS -->
-                    <div class="d-flex gap-2 w-50 mt-4">
+                    <div class="d-flex gap-2 ">
 
+                        <button type="submit" class="btn btn-primary w-50 text-center">
+                            Update Enrollment
+                        </button>
+                        
                         <a href="/enrollments/admin" class="btn btn-secondary w-50 text-center">
                             Cancel
                         </a>
-
-                        <button type="submit" class="btn btn-warning w-50 text-center">
-                            Update Enrollment
-                        </button>
-
                     </div>
 
                 </form>

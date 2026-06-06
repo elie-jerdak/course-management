@@ -1,22 +1,55 @@
 <%- include('../partials/header') %>
 
-<div class="container">
+<div class="container dashboard">
 
-    <h2>Admin Dashboard</h2>
+    <div>
+        <div style="display: flex; justify-content: space-between;">
+            <h2>Admin Dashboard</h2>
+            
+            <!-- QUICK ACTIONS -->
+            <div>
+                <div class="action-buttons-container">
+                    <a href="/courses" class="btn">Manage Courses</a>
+                    <a href="/enrollments/admin" class="btn">Manage Enrollments</a>
+                    <a href="/auth/register" class="btn">Create User</a>
+                </div>
+            </div>
+        </div>
+        
 
-    <!-- QUICK ACTIONS -->
-    <div style="margin: 20px 0; display: flex; justify-content: space-between;">
-        <div class="d-flex justify-between" style="gap:1em">
-            <a href="/courses" class="btn">Manage Courses</a>
-            <a href="/enrollments/admin" class="btn">Manage Enrollments</a>
-        </div>
-        <div> 
-            <a href="/auth/register" class="btn btn-primary">Create User</a>
-        </div>
+        <!-- USER INFO -->
+        <div class="card user-info">
+
+            <span><strong>Username:</strong> <%= user.name %></span>
+            <span><strong>Email:</strong> <%= user.email %></span>
+            <span><strong>Role:</strong> <%= user.role %></span>
+        </div> 
     </div>
+    
 
-    <!-- USERS SECTION -->
-    <h3 style="margin: 20px 0;">All Users</h3>
+    <div class="d-flex" style="justify-content: space-between;">
+        <!-- USERS SECTION -->
+        <h3 style="margin-top: 20px">All Users</h3>
+
+        <div class="search-container">
+            <form action="/dashboard/admin" method="GET" class="mb-3">
+                <div class="input-group">
+                    <input
+                        type="text"
+                        name="q"
+                        class="form-control"
+                        placeholder="Search users"
+                        value="<%= searchTerm || '' %>"
+                    >
+
+                    <button class="btn btn-action">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
 
     <% if (users && users.length > 0) { %>
 
@@ -24,7 +57,7 @@
 
             <% users.forEach(u => { %>
 
-                <div class="card">
+                <div class="card users">
 
                     <h4><%= u.name %></h4>
 
@@ -32,29 +65,31 @@
                     <p><strong>Role:</strong> <%= u.role %></p>
 
                     <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+                        <a href="/users/<%= u._id %>" class="btn btn-primary w-100">
+                            View Details
+                        </a>
 
                         <!-- PROMOTE (only if not admin) -->
                         <% if (u.role !== 'admin') { %>
-                            <form action="/users/<%= u._id %>/promote" method="POST">
+                            <form action="/users/<%= u._id %>/promote" method="POST" style="padding-top: 0;">
                                 <button type="submit" class="btn btn-warning w-100">
                                     Promote to Admin
                                 </button>
                             </form>
                         <% } %>
-                        
-                        <a href="/users/<%= u._id %>" class="btn w-100" style="text-align: center;">
-                            View Details
-                        </a>
-
+                    
                         <!-- Update, DELETE -->
                         <% if ((user.id || user._id.toString()) !== u._id.toString()) { %>
-                            <a href="/users/<%=u._id %>/edit" class="btn btn-primary" style="text-align: center;">Update User</a>
+                            <div class="UD">
+                                <a href="/users/<%=u._id %>/edit" class="btn btn-secondary w-100">Update User</a>
+                                
+                                <form action="/users/<%= u._id %>?_method=DELETE" method="POST" class="w-100">
+                                    <button type="submit" class="btn w-100" style="background:#2c6f50; color: white;">
+                                        Delete User
+                                    </button>
+                                </form>
+                            </div>
                             
-                            <form action="/users/<%= u._id %>?_method=DELETE" method="POST">
-                                <button type="submit" class="btn w-100" style="background:red;">
-                                    Delete User
-                                </button>
-                            </form>
                         
                             <% } else { %>
                             <span class="btn btn-secondary w-100" style="pointer-events:none; opacity:0.6; text-align: center;">

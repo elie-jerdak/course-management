@@ -172,26 +172,38 @@ exports.unenroll = async (req, res) => {
 exports.getAllEnrollments = async (req, res) => {
     try {
 
-        // AUTHORIZATION
         if (req.user.role !== 'admin') {
             req.flash('error', 'Unauthorized access');
             return res.redirect('/');
         }
 
-        const enrollments = await Enrollment.find()
+        const searchTerm = req.query.q?.trim() || '';
+
+        let enrollments = await Enrollment.find()
             .populate('student', 'name email')
             .populate('course', 'title')
             .lean();
 
-        res.render('enrollments/index', {
+        if (searchTerm) {
+            const term = searchTerm.toLowerCase();
+
+            enrollments = enrollments.filter(e =>
+                e.student?.name?.toLowerCase().includes(term) ||
+                e.student?.email?.toLowerCase().includes(term) ||
+                e.course?.title?.toLowerCase().includes(term)
+            );
+        }
+
+        return res.render('enrollments/index', {
             enrollments,
             user: req.user,
+            searchTerm
         });
 
     } catch (err) {
         console.log(err);
         req.flash('error', 'Failed to load enrollments');
-        res.redirect('/');
+        return res.redirect('/');
     }
 };
 
