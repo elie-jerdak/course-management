@@ -618,3 +618,11 @@ input:focus {
     color: #082d1c;
     border: none;
 }
+
+.validation-error {
+    display: block;
+    align-self: flex-start;
+    margin-left: 0.75rem;
+    color: #ff6b6b;
+    font-size: 0.9rem;
+}

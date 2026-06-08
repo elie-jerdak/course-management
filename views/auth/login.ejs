@@ -7,8 +7,16 @@
             <h5 style="color: #082d1c; font-weight: bolder;">Login</h5>
 
             <form action="/auth/login" method="POST" class="w-75">
-                    <input type="email" name="email" placeholder="Email" class="form-control" />
-                    <input type="password" name="password" placeholder="Password"class="form-control" required />
+                <input type="email" name="email" placeholder="email" value="<%= old?.email || '' %>" class="form-control" />
+                <%- include('../partials/validation', {
+                    field: 'email',
+                    errors
+                }) %>
+                <input type="password" name="password" placeholder="password" class="form-control" />
+                <%- include('../partials/validation', {
+                    field: 'password',
+                    errors
+                }) %>
                 <button type="submit" class="btn btn-action w-75 align-center">Login</button>
             </form>
 

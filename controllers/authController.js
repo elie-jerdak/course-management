@@ -7,44 +7,127 @@ const jwt = require('jsonwebtoken');
 // =======================
 exports.register = async (req, res) => {
     try {
-        let { name, email, password, role } = req.body;
+        let { username, email, password, role } = req.body;
 
         email = email?.toLowerCase().trim();
+        username = username?.trim().toLowerCase();
 
-        if (!name || !email || !password) {
-            req.flash('error', 'All fields are required');
-            return res.redirect('/auth/register');
+        const errors = {};
+
+        // ======================
+        // USERNAME VALIDATION
+        // ======================
+        if (!username) {
+            errors.username = 'Username is required';
         }
 
-        const emailRegex = /^\S+@\S+\.\S+$/;
-        if (!emailRegex.test(email)) {
-            req.flash('error', 'Invalid email format');
-            return res.redirect('/auth/register');
+        // ======================
+        // EMAIL VALIDATION
+        // ======================
+        if (!email) {
+            errors.email = 'Email is required';
+        } else {
+            const emailRegex = /^\S+@\S+\.\S+$/;
+            if (!emailRegex.test(email)) {
+                errors.email = 'Invalid email format';
+            }
         }
 
-        const existingUser = await User.findOne({ email });
+        // ======================
+        // PASSWORD VALIDATION
+        // ======================
+        if (!password) {
+            errors.password = 'Password is required';
+        } else {
+            const passwordErrors = [];
+
+            if (password.length < 8) {
+                passwordErrors.push('Minimum 8 characters required');
+            }
+            if (!/[A-Z]/.test(password)) {
+                passwordErrors.push('One uppercase letter');
+            }
+            if (!/[a-z]/.test(password)) {
+                passwordErrors.push('One lowercase letter');
+            }
+            if (!/[0-9]/.test(password)) {
+                passwordErrors.push('One number');
+            }
+
+            const specialCharRegex = /[!@#$%^&*(),.?":{}|<>_]/;
+            if (!specialCharRegex.test(password)) {
+                passwordErrors.push('One special character');
+            }
+
+            if (passwordErrors.length > 0) {
+                errors.password = passwordErrors.join(', ');
+            }
+        }
+
+        // ======================
+        // STOP IF VALIDATION FAILS
+        // ======================
+        if (Object.keys(errors).length > 0) {
+            return res.render('auth/register', {
+                errors,
+                old: { username, email, role }
+            });
+        }
+
+        // ======================
+        // DUPLICATE CHECK (OPTIMIZED)
+        // ======================
+        const existingUser = await User.findOne({
+            $or: [
+                { email },
+                { username }
+            ]
+        });
+
         if (existingUser) {
-            req.flash('error', 'Email already exists');
-            return res.redirect('/auth/register');
+            const duplicateErrors = {};
+
+            if (existingUser.email === email) {
+                duplicateErrors.email = 'Email already exists';
+            }
+
+            if (existingUser.username === username) {
+                duplicateErrors.username = 'Username already exists';
+            }
+
+            return res.render('auth/register', {
+                errors: duplicateErrors,
+                old: { username, email, role }
+            }); 
         }
 
+        // =====================
+        // CREATE USER
+        // =====================
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await User.create({
-            name: name.trim(),
+            username,
             email,
             password: hashedPassword,
-
-            // SECURITY FIX (IMPORTANT)
-            role: role === 'admin' || role === 'instructor' ? 'student' : (role || 'student')
+            role:
+                role === 'admin' || role === 'instructor'
+                    ? 'student'
+                    : (role || 'student')
         });
 
         req.flash('success', 'Account created successfully. Please login.');
         return res.redirect('/auth/login');
 
     } catch (err) {
-        req.flash('error', 'Something went wrong');
-        return res.redirect('/auth/register');
+        console.log(err);
+
+        return res.render('auth/register', {
+            errors: {
+                general: 'Something went wrong'
+            },
+            old: req.body
+        });
     }
 };
 
@@ -52,57 +135,124 @@ exports.register = async (req, res) => {
 // LOGIN
 // =======================
 exports.login = async (req, res) => {
-try {
+    try {
         let { email, password } = req.body;
 
         email = email?.toLowerCase().trim();
 
-        if (!email || !password) {
-            req.flash('error', 'Email and password are required');
-            return res.redirect('/auth/login');
+        const errors = {};
+
+        // ======================
+        // EMAIL VALIDATION
+        // ======================
+        if (!email) {
+            errors.email = 'Email is required';
+        } else {
+            const emailRegex = /^\S+@\S+\.\S+$/;
+
+            if (!emailRegex.test(email)) {
+                errors.email = 'Invalid email format';
+            }
         }
 
+        // ======================
+        // PASSWORD VALIDATION
+        // ======================
+        if (!password) {
+            errors.password = 'Password is required';
+        }
+
+        // ======================
+        // STOP IF VALIDATION FAILS
+        // ======================
+        if (Object.keys(errors).length > 0) {
+            return res.render('auth/login', {
+                errors,
+                old: {
+                    email
+                }
+            });
+        }
+
+        // ======================
+        // FIND USER
+        // ======================
         const user = await User.findOne({ email }).select('+password');
+
         if (!user) {
-            req.flash('error', 'Invalid credentials');
-            return res.redirect('/auth/login');
+            return res.render('auth/login', {
+                errors: {
+                    email: 'Invalid email or password'
+                },
+                old: {
+                    email
+                }
+            });
         }
 
+        // ======================
+        // CHECK PASSWORD
+        // ======================
         const isMatch = await bcrypt.compare(password, user.password);
+
         if (!isMatch) {
-            req.flash('error', 'Invalid credentials');
-            return res.redirect('/auth/login');
+            return res.render('auth/login', {
+                errors: {
+                    password: 'Invalid email or password'
+                },
+                old: {
+                    email
+                }
+            });
         }
 
+        // ======================
+        // JWT TOKEN
+        // ======================
         const token = jwt.sign(
             {
                 id: user._id,
                 role: user.role,
-                name: user.name,
+                username: user.username,
                 email: user.email
             },
             process.env.JWT_SECRET,
-            { expiresIn: "1d" }
+            {
+                expiresIn: '1d'
+            }
         );
 
-        res.cookie("token", token, {
+        res.cookie('token', token, {
             httpOnly: true,
             sameSite: 'strict',
             secure: true
         });
 
-        req.flash('success', 'Login successful');
+        // ======================
+        // ROLE REDIRECT
+        // ======================
+        if (user.role === 'admin') {
+            return res.redirect('/dashboard/admin');
+        }
 
-        // role-based redirect
-        if (user.role === "admin") return res.redirect('/dashboard/admin');
-        if (user.role === "instructor") return res.redirect('/dashboard/instructor');
+        if (user.role === 'instructor') {
+            return res.redirect('/dashboard/instructor');
+        }
+
         return res.redirect('/dashboard/student');
 
     } catch (err) {
-    console.log("LOGIN ERROR:", err);
-    req.flash('error', 'Login failed');
-    return res.redirect('/auth/login');
-}
+        console.log('LOGIN ERROR:', err);
+
+        return res.render('auth/login', {
+            errors: {
+                general: 'Login failed'
+            },
+            old: {
+                email: req.body?.email || ''
+            }
+        });
+    }
 };
 
 // =======================
